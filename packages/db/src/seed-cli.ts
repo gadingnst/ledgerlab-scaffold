@@ -17,6 +17,11 @@ async function main(): Promise<void> {
       if (!existing.has(account.code)) await repo.createAccount(account);
     }
     const accountsByCode = new Map((await repo.listAccounts()).map((a) => [a.code, a]));
+    const { total } = await repo.listJournalEntries({ page: 1, pageSize: 1 });
+    if (total > 0) {
+      console.log(`Seed skipped: ${total} journal entries already present.`);
+      return;
+    }
     for (const entry of buildSeedEntries()) {
       await repo.createJournalEntry({
         date: entry.date,

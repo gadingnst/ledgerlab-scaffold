@@ -1,0 +1,100 @@
+# Local development with hot reload. Prefer `./run-dev.sh`, which wraps:
+#   docker compose -f docker-compose.dev.yml up --build
+#
+# Source is bind-mounted into the containers. node_modules stay inside the
+# image (anonymous volumes) so host/container binaries never mix.
+name: ledgerlab-dev
+
+x-app: &app
+  build:
+    context: .
+    target: dev
+  image: ledgerlab/dev:local
+  volumes:
+    - .:/app
+    - /app/node_modules
+    - /app/apps/ledger-api/node_modules
+    - /app/apps/reporting-api/node_modules
+    - /app/apps/web/node_modules
+    - /app/packages/db/node_modules
+    - /app/packages/shared/node_modules
+    - /app/packages/ui/node_modules
+  environment: &app-env
+    NODE_ENV: development
+    # File events from macOS/Windows bind mounts are unreliable; poll instead.
+    CHOKIDAR_USEPOLLING: "true"
+    CHOKIDAR_INTERVAL: "300"
+    CORS_ORIGINS: http://localhost:5173
+    INTERNAL_API_TOKEN: dev-internal-token
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ledgerlab
+      POSTGRES_PASSWORD: ledgerlab
+      POSTGRES_DB: ledgerlab
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata-dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ledgerlab -d ledgerlab"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  db-init:
+    <<: *app
+    environment:
+      <<: *app-env
+      DATABASE_URL: postgres://ledgerlab:ledgerlab@postgres:5432/ledgerlab
+    command: sh -c "pnpm --filter @ledgerlab/db migrate:sql && pnpm --filter @ledgerlab/db seed"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  ledger-api:
+    <<: *app
+    environment:
+      <<: *app-env
+      DATABASE_URL: postgres://ledgerlab:ledgerlab@postgres:5432/ledgerlab
+      LEDGER_API_PORT: "4001"
+      LEDGER_API_HOST: 0.0.0.0
+    command: pnpm --filter @ledgerlab/ledger-api dev
+    ports:
+      - "4001:4001"
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+
+  reporting-api:
+    <<: *app
+    environment:
+      <<: *app-env
+      REPORTING_API_PORT: "4002"
+      REPORTING_API_HOST: 0.0.0.0
+      LEDGER_API_URL: http://ledger-api:4001
+    command: pnpm --filter @ledgerlab/reporting-api dev
+    ports:
+      - "4002:4002"
+    depends_on:
+      - ledger-api
+
+  web:
+    <<: *app
+    environment:
+      <<: *app-env
+      # The browser runs on the host, so it reaches the APIs via published ports.
+      VITE_LEDGER_API_URL: http://localhost:4001
+      VITE_REPORTING_API_URL: http://localhost:4002
+    command: pnpm --filter @ledgerlab/web dev --host 0.0.0.0 --port 5173 --strictPort
+    ports:
+      - "5173:5173"
+    depends_on:
+      - ledger-api
+      - reporting-api
+
+volumes:
+  pgdata-dev:

@@ -266,6 +266,27 @@ pnpm --filter @ledgerlab/ledger-api test:challenges   # red — your work
 Copy `.env.example` to `.env` if you want to override ports or point at a
 database.
 
+### Docker
+
+One root `Dockerfile` with targets `dev`, `tools`, `ledger-api`,
+`reporting-api` and `web`.
+
+```bash
+# Development: Postgres + migrate/seed + all apps with hot reload
+./run-dev.sh                 # foreground (Ctrl+C to stop); -d for detached
+./run-dev.sh logs -f web     # any other args pass through to docker compose
+./run-dev.sh down            # stop;  ./run-dev.sh reset  also wipes the dev DB
+
+# Production / staging: build images, then run them
+cp .env.example .env         # set POSTGRES_PASSWORD, INTERNAL_API_TOKEN, CORS_ORIGINS
+docker compose build
+docker compose up -d
+docker compose --profile seed run --rm seed   # optional demo data
+```
+
+Dev URLs: dashboard http://localhost:5173, ledger http://localhost:4001,
+reporting http://localhost:4002. Prod compose serves the dashboard on :8080.
+
 ---
 
 ## 7. Databases

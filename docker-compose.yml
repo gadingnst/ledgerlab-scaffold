@@ -1,0 +1,102 @@
+# Production / staging: build immutable images first, then run them.
+#
+#   cp .env.example .env            # fill in real values (never commit .env)
+#   docker compose build
+#   docker compose up -d
+#
+# Images are built from the root Dockerfile targets. No source is mounted.
+name: ledgerlab
+
+x-api-env: &api-env
+  NODE_ENV: production
+  CORS_ORIGINS: ${CORS_ORIGINS:?set CORS_ORIGINS to the dashboard origin}
+  INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:?set INTERNAL_API_TOKEN}
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ledgerlab}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-ledgerlab}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    # Not published: only reachable on the compose network.
+
+  migrate:
+    build:
+      context: .
+      target: tools
+    image: ledgerlab/tools:${IMAGE_TAG:-latest}
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgres://${POSTGRES_USER:-ledgerlab}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-ledgerlab}}
+    command: ["pnpm", "--filter", "@ledgerlab/db", "migrate:sql"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  # Optional demo data: `docker compose --profile seed run --rm seed`
+  seed:
+    image: ledgerlab/tools:${IMAGE_TAG:-latest}
+    profiles: ["seed"]
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgres://${POSTGRES_USER:-ledgerlab}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-ledgerlab}}
+    command: ["pnpm", "--filter", "@ledgerlab/db", "seed"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  ledger-api:
+    build:
+      context: .
+      target: ledger-api
+    image: ledgerlab/ledger-api:${IMAGE_TAG:-latest}
+    environment:
+      <<: *api-env
+      DATABASE_URL: ${DATABASE_URL:-postgres://${POSTGRES_USER:-ledgerlab}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-ledgerlab}}
+    ports:
+      - "${LEDGER_API_PORT:-4001}:4001"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  reporting-api:
+    build:
+      context: .
+      target: reporting-api
+    image: ledgerlab/reporting-api:${IMAGE_TAG:-latest}
+    environment:
+      <<: *api-env
+      LEDGER_API_URL: http://ledger-api:4001
+    ports:
+      - "${REPORTING_API_PORT:-4002}:4002"
+    depends_on:
+      ledger-api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      target: web
+      args:
+        VITE_LEDGER_API_URL: ${VITE_LEDGER_API_URL:-http://localhost:4001}
+        VITE_REPORTING_API_URL: ${VITE_REPORTING_API_URL:-http://localhost:4002}
+    image: ledgerlab/web:${IMAGE_TAG:-latest}
+    ports:
+      - "${WEB_PORT:-8080}:8080"
+    depends_on:
+      - ledger-api
+      - reporting-api
+    restart: unless-stopped
+
+volumes:
+  pgdata:

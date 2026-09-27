@@ -9,7 +9,17 @@
 set -eu
 
 cd "$(dirname "$0")"
-COMPOSE="docker compose -f docker-compose.dev.yml"
+
+ENV_FLAG=""
+if [ -f ".env.dev" ]; then
+  echo "📋 Using environment from .env.dev"
+  ENV_FLAG="--env-file .env.dev"
+elif [ -f ".env" ]; then
+  echo "📋 Using environment from .env"
+  ENV_FLAG="--env-file .env"
+fi
+
+COMPOSE="docker compose $ENV_FLAG -f docker-compose.dev.yml"
 
 case "${1:-up}" in
   up | -d)

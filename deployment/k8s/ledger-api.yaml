@@ -17,8 +17,8 @@ spec:
     spec:
       containers:
         - name: ledger-api
-          image: ledgerlab/ledger-api:latest
-          imagePullPolicy: IfNotPresent
+          image: ghcr.io/gadingnst/ledgerlab-scaffold/ledger-api:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 4001
               name: http

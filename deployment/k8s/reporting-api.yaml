@@ -17,8 +17,8 @@ spec:
     spec:
       containers:
         - name: reporting-api
-          image: ledgerlab/reporting-api:latest
-          imagePullPolicy: IfNotPresent
+          image: ghcr.io/gadingnst/ledgerlab-scaffold/reporting-api:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 4002
               name: http

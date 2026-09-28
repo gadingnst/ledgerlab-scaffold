@@ -17,8 +17,8 @@ spec:
     spec:
       containers:
         - name: web
-          image: ledgerlab/web:latest
-          imagePullPolicy: IfNotPresent
+          image: ghcr.io/gadingnst/ledgerlab-scaffold/web:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
               name: http

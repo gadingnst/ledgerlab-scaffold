@@ -14,8 +14,8 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: migrate
-          image: ledgerlab/tools:latest
-          imagePullPolicy: IfNotPresent
+          image: ghcr.io/gadingnst/ledgerlab-scaffold/tools:latest
+          imagePullPolicy: Always
           command: ["pnpm", "--filter", "@ledgerlab/db", "migrate:sql"]
           env:
             - name: DATABASE_URL

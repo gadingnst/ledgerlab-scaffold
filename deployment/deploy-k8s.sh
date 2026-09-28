@@ -133,7 +133,8 @@ sync_secrets() {
   echo "🔐 Synchronizing namespace and secrets for '$NAMESPACE'..."
   kubectl apply -f deployment/k8s/namespace.yaml > /dev/null
 
-  kubectl create secret generic ledgerlab-secrets     --namespace "$NAMESPACE"     --from-literal=DATABASE_URL="$DATABASE_URL"     --from-literal=INTERNAL_API_TOKEN="$INTERNAL_API_TOKEN"     --from-literal=CORS_ORIGINS="$CORS_ORIGINS"     --dry-run=client -o yaml | kubectl apply -f - > /dev/null
+  kubectl create secret generic ledgerlab-secrets     --namespace "$NAMESPACE"     --from-literal=DATABASE_URL="$DATABASE_URL"     --from-literal=INTERNAL_API_TOKEN="$INTERNAL_API_TOKEN"     --from-literal=CORS_ORIGINS="$CORS_ORIGINS"  \
+    --from-literal=REDIS_URL="${REDIS_URL:-redis://:RinutWithGading2404@10.18.1.103:6379/0}"     --dry-run=client -o yaml | kubectl apply -f - > /dev/null
   echo "   ✅ Secrets synced."
 
   # If GHCR credentials provided, configure image pull secret

@@ -22,7 +22,13 @@ export function DashboardPage() {
         }
       />
 
-      <Async loading={summary.loading} error={summary.error} data={summary.data} onRetry={summary.reload}>
+      <Async
+        loading={summary.loading}
+        error={summary.error}
+        data={summary.data}
+        onRetry={summary.reload}
+        skeleton="stat"
+      >
         {(data) => (
           <>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -87,12 +93,18 @@ export function DashboardPage() {
         title="Recent journal entries"
         padded={false}
         actions={
-          <Link to="/ledger" className="text-sm text-indigo-600 hover:text-indigo-700">
+          <Link to="/ledger" className="text-sm font-medium text-indigo-600 hover:text-indigo-700">
             View all
           </Link>
         }
       >
-        <Async loading={recent.loading} error={recent.error} data={recent.data} onRetry={recent.reload}>
+        <Async
+          loading={recent.loading}
+          error={recent.error}
+          data={recent.data}
+          onRetry={recent.reload}
+          skeleton="table"
+        >
           {(page) => (
             <TableWrap>
               <THead>

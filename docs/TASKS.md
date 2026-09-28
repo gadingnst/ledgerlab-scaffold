@@ -37,14 +37,14 @@ Legend: **P0** blocks everything · **P1** core · **P2** required for full mark
 
 ## P2 — Product quality
 
-- [ ] Un-slop the dashboard per [`DESIGN.md`](DESIGN.md): remove decorative
+- [x] Un-slop the dashboard per [`DESIGN.md`](DESIGN.md): remove decorative
       icons, gradients, excess nested cards; fix hierarchy and spacing.
-- [ ] Empty, loading, and error states on every page.
-- [ ] Keyboard access: the ledger list is navigable, the entry form is usable
+- [x] Empty, loading, and error states on every page.
+- [x] Keyboard access: the ledger list is navigable, the entry form is usable
       without a mouse.
-- [ ] Money input rejects bad values with an inline message (uses
+- [x] Money input rejects bad values with an inline message (uses
       `parseAmountToMinor` errors).
-- [ ] Pagination and filtering on the ledger list (status, date range).
+- [x] Pagination and filtering on the ledger list (status, date range).
 
 ## P2 — Database
 

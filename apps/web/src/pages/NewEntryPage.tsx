@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { formatMinor, isBalanced, parseAmountToMinor } from "@ledgerlab/shared";
-import { Badge, Button, Card, Field, Input, PageHeader, Select, TD, TR } from "@ledgerlab/ui";
+import { Badge, Button, Card, Field, Input, PageHeader, Select, TD, TR, cn } from "@ledgerlab/ui";
 import { Async } from "../components/states";
 import { api, ApiError } from "../lib/api";
 import { useAsync } from "../lib/useAsync";
@@ -43,14 +43,26 @@ export function NewEntryPage() {
     if (!line.amount.trim()) return undefined;
     try {
       const value = Math.abs(parseAmountToMinor(line.amount));
+      if (value === 0) return undefined;
       return line.side === "DEBIT" ? value : -value;
     } catch {
       return undefined;
     }
   }
 
+  function getLineError(line: DraftLine): string | undefined {
+    if (!line.amount.trim()) return undefined;
+    try {
+      const val = parseAmountToMinor(line.amount);
+      if (val === 0) return "Amount cannot be zero";
+      return undefined;
+    } catch {
+      return "Invalid amount (e.g. 1500.00)";
+    }
+  }
+
   const parsed = lines.map(signedMinor);
-  const complete = parsed.every((value) => value !== undefined);
+  const complete = parsed.every((value) => value !== undefined) && lines.every((l) => l.accountId !== "");
   const total = parsed.reduce<number>((sum, value) => sum + (value ?? 0), 0);
   const balanced = complete && isBalanced(parsed as number[]);
 
@@ -107,7 +119,7 @@ export function NewEntryPage() {
                     placeholder="Invoice #1043 — Acme Ltd."
                   />
                 </Field>
-                <Field label="Reference" htmlFor="reference" hint="Optional">
+                <Field label="Reference" htmlFor="reference" hint="Optional tracking ID">
                   <Input
                     id="reference"
                     value={reference}
@@ -131,75 +143,100 @@ export function NewEntryPage() {
                 <thead className="border-b border-zinc-200">
                   <tr className="text-xs uppercase tracking-wide text-zinc-500">
                     <th className="px-4 py-2.5 text-left font-medium">Account</th>
-                    <th className="px-4 py-2.5 text-left font-medium">Side</th>
-                    <th className="px-4 py-2.5 text-right font-medium">Amount</th>
+                    <th className="px-4 py-2.5 text-left font-medium w-36">Side</th>
+                    <th className="px-4 py-2.5 text-right font-medium w-48">Amount</th>
                     <th className="w-16" />
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-100">
-                  {lines.map((line) => (
-                    <TR key={line.key}>
-                      <TD className="w-1/2">
-                        <Select
-                          required
-                          value={line.accountId}
-                          onChange={(e) => updateLine(line.key, { accountId: e.target.value })}
-                        >
-                          <option value="">Select account…</option>
-                          {accountList.map((account) => (
-                            <option key={account.id} value={account.id}>
-                              {account.code} · {account.name}
-                            </option>
-                          ))}
-                        </Select>
-                      </TD>
-                      <TD>
-                        <Select
-                          value={line.side}
-                          onChange={(e) =>
-                            updateLine(line.key, { side: e.target.value as DraftLine["side"] })
-                          }
-                        >
-                          <option value="DEBIT">Debit</option>
-                          <option value="CREDIT">Credit</option>
-                        </Select>
-                      </TD>
-                      <TD numeric className="w-40">
-                        <Input
-                          inputMode="decimal"
-                          placeholder="0.00"
-                          value={line.amount}
-                          onChange={(e) => updateLine(line.key, { amount: e.target.value })}
-                          className="text-right"
-                        />
-                      </TD>
-                      <TD>
-                        <Button size="sm" variant="ghost" onClick={() => removeLine(line.key)} type="button">
-                          Remove
-                        </Button>
-                      </TD>
-                    </TR>
-                  ))}
+                  {lines.map((line) => {
+                    const lineError = getLineError(line);
+                    return (
+                      <TR key={line.key}>
+                        <TD className="align-top">
+                          <Select
+                            required
+                            value={line.accountId}
+                            onChange={(e) => updateLine(line.key, { accountId: e.target.value })}
+                          >
+                            <option value="">Select account…</option>
+                            {accountList.map((account) => (
+                              <option key={account.id} value={account.id}>
+                                {account.code} · {account.name}
+                              </option>
+                            ))}
+                          </Select>
+                        </TD>
+                        <TD className="align-top">
+                          <Select
+                            value={line.side}
+                            onChange={(e) =>
+                              updateLine(line.key, { side: e.target.value as DraftLine["side"] })
+                            }
+                          >
+                            <option value="DEBIT">Debit</option>
+                            <option value="CREDIT">Credit</option>
+                          </Select>
+                        </TD>
+                        <TD numeric className="align-top">
+                          <Input
+                            inputMode="decimal"
+                            placeholder="0.00"
+                            className={cn(
+                              "text-right tabular-nums",
+                              lineError ? "border-red-500 focus:border-red-500 focus:ring-red-100" : "",
+                            )}
+                            value={line.amount}
+                            onChange={(e) => updateLine(line.key, { amount: e.target.value })}
+                            required
+                          />
+                          {lineError ? (
+                            <p className="mt-1 text-right text-xs text-red-600">{lineError}</p>
+                          ) : null}
+                        </TD>
+                        <TD className="align-top text-right">
+                          {lines.length > 2 ? (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              className="text-zinc-400 hover:text-red-600"
+                              onClick={() => removeLine(line.key)}
+                            >
+                              ✕
+                            </Button>
+                          ) : null}
+                        </TD>
+                      </TR>
+                    );
+                  })}
                 </tbody>
               </table>
-              <div className="flex items-center justify-between border-t border-zinc-200 px-4 py-3">
-                <Button type="button" onClick={() => setLines((current) => [...current, blankLine()])}>
-                  Add line
+
+              <div className="flex items-center justify-between border-t border-zinc-200 px-4 py-3 bg-zinc-50/50">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setLines([...lines, blankLine()])}
+                >
+                  + Add line
                 </Button>
-                <span className="text-sm text-zinc-600">
-                  Net: <span className="tabular-nums">{formatMinor(total)}</span>
-                </span>
+                <div className="text-sm font-medium tabular-nums text-zinc-700">
+                  Net difference:{" "}
+                  <span className={balanced ? "text-emerald-600" : "text-amber-600"}>{money(total)}</span>
+                </div>
               </div>
             </Card>
 
             {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
-            <div className="flex justify-end gap-2">
-              <Button type="button" onClick={() => navigate("/ledger")}>
+            <div className="flex justify-end gap-3">
+              <Button type="button" variant="secondary" onClick={() => navigate("/ledger")}>
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" loading={submitting} disabled={!balanced}>
-                Post entry
+              <Button type="submit" variant="primary" disabled={!balanced} loading={submitting}>
+                Post journal entry
               </Button>
             </div>
           </form>

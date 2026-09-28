@@ -47,51 +47,63 @@ export function AccountsPage() {
       <PageHeader title="Chart of accounts" description="The accounts your ledger can post to." />
 
       <Card title="Add an account">
-        <form onSubmit={submit} className="grid grid-cols-1 gap-4 sm:grid-cols-4">
-          <Field label="Code" htmlFor="code" hint="Exactly four digits">
-            <Input
-              id="code"
-              inputMode="numeric"
-              maxLength={4}
-              required
-              value={form.code}
-              onChange={(e) => setForm({ ...form, code: e.target.value })}
-              placeholder="6200"
-            />
-          </Field>
-          <Field label="Name" htmlFor="name">
-            <Input
-              id="name"
-              required
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="Software subscriptions"
-            />
-          </Field>
-          <Field label="Type" htmlFor="type">
-            <Select
-              id="type"
-              value={form.type}
-              onChange={(e) => setForm({ ...form, type: e.target.value as CreateAccountInput["type"] })}
-            >
-              {ACCOUNT_TYPES.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </Select>
-          </Field>
-          <div className="flex items-end gap-2">
-            <Button type="submit" variant="primary" loading={submitting}>
-              Add account
-            </Button>
+        <form onSubmit={submit} className="flex flex-col gap-3">
+          <div className="grid grid-cols-1 items-end gap-3.5 sm:grid-cols-12">
+            <div className="sm:col-span-3">
+              <Field label="Code" htmlFor="code">
+                <Input
+                  id="code"
+                  inputMode="numeric"
+                  maxLength={4}
+                  required
+                  value={form.code}
+                  onChange={(e) => setForm({ ...form, code: e.target.value })}
+                  placeholder="6200"
+                />
+              </Field>
+            </div>
+            <div className="sm:col-span-4">
+              <Field label="Name" htmlFor="name">
+                <Input
+                  id="name"
+                  required
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  placeholder="Software subscriptions"
+                />
+              </Field>
+            </div>
+            <div className="sm:col-span-3">
+              <Field label="Type" htmlFor="type">
+                <Select
+                  id="type"
+                  value={form.type}
+                  onChange={(e) => setForm({ ...form, type: e.target.value as CreateAccountInput["type"] })}
+                >
+                  {ACCOUNT_TYPES.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </Select>
+              </Field>
+            </div>
+            <div className="sm:col-span-2">
+              <Button type="submit" variant="primary" loading={submitting} className="w-full">
+                Add account
+              </Button>
+            </div>
           </div>
+          <p className="text-xs text-zinc-500">
+            Account codes must be exactly four digits (e.g. 1000 for Cash, 2000 for Liabilities, 4000 for
+            Revenue).
+          </p>
         </form>
         {formError ? <p className="mt-3 text-sm text-red-600">{formError}</p> : null}
       </Card>
 
       <Card title="Accounts" padded={false}>
-        <Async loading={loading} error={error} data={data} onRetry={reload}>
+        <Async loading={loading} error={error} data={data} onRetry={reload} skeleton="table">
           {(accounts) => (
             <TableWrap>
               <THead>

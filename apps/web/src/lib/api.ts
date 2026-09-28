@@ -72,10 +72,12 @@ export const api = {
           body: JSON.stringify(input),
         })
       ).data,
-    listJournalEntries: (params: { page?: number; pageSize?: number; status?: string } = {}) =>
+    listJournalEntries: (
+      params: { page?: number; pageSize?: number; status?: string; fromDate?: string; toDate?: string } = {},
+    ) =>
       request<Paginated<JournalEntry>>(
         LEDGER_URL,
-        `/api/journal-entries${query({ page: params.page, pageSize: params.pageSize, status: params.status })}`,
+        `/api/journal-entries${query({ page: params.page, pageSize: params.pageSize, status: params.status, fromDate: params.fromDate, toDate: params.toDate })}`,
       ),
     createJournalEntry: async (input: CreateJournalEntryInput) =>
       (

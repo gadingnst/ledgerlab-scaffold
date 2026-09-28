@@ -7,3 +7,4 @@ export { TableWrap, THead, TBody, TR, TH, TD, type THProps, type TDProps } from 
 export { Field, Input, Select, type FieldProps } from "./field";
 export { PageHeader, type PageHeaderProps } from "./page-header";
 export { EmptyState, type EmptyStateProps } from "./empty-state";
+export { Skeleton, CardSkeleton, StatGridSkeleton, TableSkeleton } from "./skeleton";

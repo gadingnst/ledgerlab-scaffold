@@ -56,6 +56,7 @@ export function ReportsPage() {
           error={balanceSheet.error}
           data={balanceSheet.data}
           onRetry={balanceSheet.reload}
+          skeleton="table"
         >
           {(data) => (
             <TableWrap>
@@ -85,11 +86,18 @@ export function ReportsPage() {
       </Card>
 
       <Card title="Income statement" description={`${formatDate(from)} → ${formatDate(to)}`} padded={false}>
-        <Async loading={income.loading} error={income.error} data={income.data} onRetry={income.reload}>
+        <Async
+          loading={income.loading}
+          error={income.error}
+          data={income.data}
+          onRetry={income.reload}
+          skeleton="table"
+        >
           {(data) => (
             <TableWrap>
               <THead>
                 <TR>
+                  <TH className="w-24">Code</TH>
                   <TH>Line</TH>
                   <TH numeric>Amount</TH>
                 </TR>
@@ -97,26 +105,32 @@ export function ReportsPage() {
               <TBody>
                 {data.revenue.map((row) => (
                   <TR key={row.accountId}>
+                    <TD className="font-mono text-xs text-zinc-500">{row.code}</TD>
                     <TD>{row.name}</TD>
-                    <TD numeric>{money(row.balanceMinor)}</TD>
+                    <TD numeric>{money(Math.abs(row.balanceMinor))}</TD>
                   </TR>
                 ))}
                 <TR className="bg-zinc-50">
-                  <TD className="font-medium">Total revenue</TD>
+                  <TD colSpan={2} className="font-medium">
+                    Total revenue
+                  </TD>
                   <TD numeric>{money(data.totalRevenueMinor)}</TD>
                 </TR>
                 {data.expenses.map((row) => (
                   <TR key={row.accountId}>
+                    <TD className="font-mono text-xs text-zinc-500">{row.code}</TD>
                     <TD>{row.name}</TD>
-                    <TD numeric>{money(row.balanceMinor)}</TD>
+                    <TD numeric>{money(Math.abs(row.balanceMinor))}</TD>
                   </TR>
                 ))}
                 <TR className="bg-zinc-50">
-                  <TD className="font-medium">Total expenses</TD>
+                  <TD colSpan={2} className="font-medium">
+                    Total expenses
+                  </TD>
                   <TD numeric>{money(data.totalExpensesMinor)}</TD>
                 </TR>
                 <TR className="bg-zinc-50 font-semibold">
-                  <TD>Net income</TD>
+                  <TD colSpan={2}>Net income</TD>
                   <TD numeric>{money(data.netIncomeMinor)}</TD>
                 </TR>
               </TBody>
@@ -126,7 +140,13 @@ export function ReportsPage() {
       </Card>
 
       <Card title="Trial balance" description={`As of ${formatDate(asOf)}`} padded={false}>
-        <Async loading={trial.loading} error={trial.error} data={trial.data} onRetry={trial.reload}>
+        <Async
+          loading={trial.loading}
+          error={trial.error}
+          data={trial.data}
+          onRetry={trial.reload}
+          skeleton="table"
+        >
           {(data) => (
             <TableWrap>
               <THead>
@@ -146,7 +166,7 @@ export function ReportsPage() {
                     <TD numeric>{row.creditMinor ? money(row.creditMinor) : ""}</TD>
                   </TR>
                 ))}
-                <TR className="bg-zinc-50 font-medium">
+                <TR className="bg-zinc-50 font-semibold">
                   <TD colSpan={2}>Totals</TD>
                   <TD numeric>{money(data.totalDebitMinor)}</TD>
                   <TD numeric>{money(data.totalCreditMinor)}</TD>

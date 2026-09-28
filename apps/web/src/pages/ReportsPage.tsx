@@ -4,6 +4,8 @@ import { Async } from "../components/states";
 import { api } from "../lib/api";
 import { useAsync } from "../lib/useAsync";
 import { formatDate, money, monthStart, today } from "../lib/format";
+import { trialBalanceToCsv } from "@ledgerlab/shared";
+import { CsvExportButton } from "../components/CsvExportButton";
 
 export function ReportsPage() {
   const [asOf, setAsOf] = useState(today());
@@ -139,7 +141,19 @@ export function ReportsPage() {
         </Async>
       </Card>
 
-      <Card title="Trial balance" description={`As of ${formatDate(asOf)}`} padded={false}>
+      <Card
+        title="Trial balance"
+        description={`As of ${formatDate(asOf)}`}
+        actions={
+          trial.data ? (
+            <CsvExportButton
+              filename={`trial-balance-${asOf}.csv`}
+              getData={() => trialBalanceToCsv(trial.data!)}
+            />
+          ) : undefined
+        }
+        padded={false}
+      >
         <Async
           loading={trial.loading}
           error={trial.error}

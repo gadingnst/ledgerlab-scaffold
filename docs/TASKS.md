@@ -99,7 +99,7 @@ Legend: **P0** blocks everything · **P1** core · **P2** required for full mark
 - [ ] Multi-currency: reports must not sum across currencies silently. Group by
       currency or require an explicit FX rate.
 - [ ] Audit trail: who changed what, when.
-- [ ] CSV or PDF export for the trial balance.
+- [x] CSV or PDF export for the trial balance.
 - [ ] OpenAPI spec generated from the route schemas.
 - [ ] A load test (`k6`/`autocannon`) with results committed.
 

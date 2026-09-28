@@ -1,1 +1,0 @@
-deployment/deploy-k8s.sh

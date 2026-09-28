@@ -1,6 +1,7 @@
 import { SEED_ACCOUNTS, buildSeedEntries } from "@ledgerlab/shared";
 import { createDatabase } from "./client";
 import { PostgresLedgerRepository } from "./postgres-repository";
+import { journalEntries, journalLines } from "./schema";
 
 /**
  * Seed a Postgres database with the demo chart of accounts and journal entries.
@@ -17,10 +18,16 @@ async function main(): Promise<void> {
       if (!existing.has(account.code)) await repo.createAccount(account);
     }
     const accountsByCode = new Map((await repo.listAccounts()).map((a) => [a.code, a]));
+    const force = process.argv.includes("--force") || process.argv.includes("-f");
     const { total } = await repo.listJournalEntries({ page: 1, pageSize: 1 });
-    if (total > 0) {
-      console.log(`Seed skipped: ${total} journal entries already present.`);
+    if (total > 0 && !force) {
+      console.log(`Seed skipped: ${total} journal entries already present. Pass --force to reset and re-seed.`);
       return;
+    }
+    if (total > 0 && force) {
+      console.log(`[seed] --force specified: resetting existing journal entries...`);
+      await db.delete(journalLines);
+      await db.delete(journalEntries);
     }
     for (const entry of buildSeedEntries()) {
       await repo.createJournalEntry({

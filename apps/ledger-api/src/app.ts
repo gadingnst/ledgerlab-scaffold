@@ -3,6 +3,7 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { AppError, errorResponseSchema } from "@ledgerlab/shared";
+import { rateLimit } from "@ledgerlab/rate-limit";
 import type { LedgerService } from "./services/ledger-service";
 import { accountRoutes } from "./routes/accounts";
 import { healthRoutes } from "./routes/health";
@@ -16,9 +17,16 @@ export interface CreateAppOptions {
   corsOrigins?: string[];
   /** Optional shared secret guarding /api/internal/*. */
   internalToken?: string;
+  /** Redis URL for rate limiting */
+  redisUrl?: string;
 }
 
-export function createLedgerApp({ service, corsOrigins = ["*"], internalToken }: CreateAppOptions): Hono {
+export function createLedgerApp({
+  service,
+  corsOrigins = ["*"],
+  internalToken,
+  redisUrl,
+}: CreateAppOptions): Hono {
   const app = new Hono();
 
   if (process.env.NODE_ENV !== "test") app.use("*", logger());
@@ -29,6 +37,32 @@ export function createLedgerApp({ service, corsOrigins = ["*"], internalToken }:
         corsOrigins.includes("*") ? (origin ?? "*") : corsOrigins.includes(origin) ? origin : null,
       allowMethods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
       allowHeaders: ["Content-Type", "Authorization"],
+    }),
+  );
+
+  // Global baseline rate limit on /api/* (120 req / 1 min window)
+  app.use(
+    "/api/*",
+    rateLimit({
+      window: "1m",
+      limit: 120,
+      by: "ip",
+      keyPrefix: "ledger:api",
+      redisUrl,
+      skip: (c) => c.req.path.startsWith("/api/internal"),
+    }),
+  );
+
+  // Stricter rate limit on sensitive journal writes (30 req / 1 min window)
+  app.use(
+    "/api/journal-entries*",
+    rateLimit({
+      window: "1m",
+      limit: 30,
+      by: "ip",
+      keyPrefix: "ledger:journal-write",
+      redisUrl,
+      skip: (c) => c.req.method === "GET",
     }),
   );
 

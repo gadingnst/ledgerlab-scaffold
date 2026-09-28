@@ -48,9 +48,9 @@ command, or a screenshot.
 
 ## 6. Rate limiting and abuse
 
-- [ ] A rate limit on `/api/*` (Cloudflare rule, Cloud Armor, WAF, or middleware).
-- [ ] Document the chosen limit and the action (block/challenge).
-- [ ] Evidence of a blocked burst.
+- [x] A rate limit on `/api/*` (Cloudflare edge rule + modular `@ledgerlab/rate-limit` middleware with Redis store).
+- [x] Document the chosen limit and the action: 120 req/min baseline on `/api/*`, 30 req/min on journal write mutations, returns HTTP 429 Too Many Requests with `Retry-After` header and JSON error body.
+- [x] Evidence of a blocked burst: verified in test suite `packages/rate-limit/src/__tests__/rate-limit.test.ts` and live Redis increment.
 
 ## 7. Database
 

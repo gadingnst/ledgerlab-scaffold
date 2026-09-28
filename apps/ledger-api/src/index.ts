@@ -16,6 +16,7 @@ const app = createLedgerApp({
   service,
   corsOrigins,
   internalToken: process.env.INTERNAL_API_TOKEN,
+  redisUrl: process.env.REDIS_URL,
 });
 
 const server = serve({ fetch: app.fetch, port, hostname }, (info) => {

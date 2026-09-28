@@ -34,6 +34,11 @@ spec:
                 secretKeyRef:
                   name: ledgerlab-secrets
                   key: INTERNAL_API_TOKEN
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: ledgerlab-secrets
+                  key: REDIS_URL
             - name: CORS_ORIGINS
               valueFrom:
                 secretKeyRef:

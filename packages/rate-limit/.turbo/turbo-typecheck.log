@@ -1,0 +1,4 @@
+
+> @ledgerlab/rate-limit@0.1.0 typecheck /app/packages/rate-limit
+> tsc --noEmit
+

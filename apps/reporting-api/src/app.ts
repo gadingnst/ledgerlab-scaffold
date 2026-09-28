@@ -3,6 +3,7 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { AppError } from "@ledgerlab/shared";
+import { rateLimit } from "@ledgerlab/rate-limit";
 import type { ReportingService } from "./services/reporting-service";
 import { healthRoutes } from "./routes/health";
 import { reportRoutes } from "./routes/reports";
@@ -10,9 +11,10 @@ import { reportRoutes } from "./routes/reports";
 export interface CreateAppOptions {
   service: ReportingService;
   corsOrigins?: string[];
+  redisUrl?: string;
 }
 
-export function createReportingApp({ service, corsOrigins = ["*"] }: CreateAppOptions): Hono {
+export function createReportingApp({ service, corsOrigins = ["*"], redisUrl }: CreateAppOptions): Hono {
   const app = new Hono();
 
   if (process.env.NODE_ENV !== "test") app.use("*", logger());
@@ -23,6 +25,18 @@ export function createReportingApp({ service, corsOrigins = ["*"] }: CreateAppOp
         corsOrigins.includes("*") ? (origin ?? "*") : corsOrigins.includes(origin) ? origin : null,
       allowMethods: ["GET", "OPTIONS"],
       allowHeaders: ["Content-Type", "Authorization"],
+    }),
+  );
+
+  // Global baseline rate limit on /api/* (120 req / 1 min window)
+  app.use(
+    "/api/*",
+    rateLimit({
+      window: "1m",
+      limit: 120,
+      by: "ip",
+      keyPrefix: "reporting:api",
+      redisUrl,
     }),
   );
 

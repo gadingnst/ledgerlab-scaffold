@@ -96,8 +96,26 @@ describe("ReportingService", () => {
       listPostings: async () => [
         ...POSTINGS,
         // Large voided revenue that must not appear in P&L or balance sheet
-        posting("je_void_rev", "2026-01-20", "acct_ar", "1100", "Accounts Receivable", "ASSET", 100_000, "VOID"),
-        posting("je_void_rev", "2026-01-20", "acct_rev", "4000", "Service Revenue", "REVENUE", -100_000, "VOID"),
+        posting(
+          "je_void_rev",
+          "2026-01-20",
+          "acct_ar",
+          "1100",
+          "Accounts Receivable",
+          "ASSET",
+          100_000,
+          "VOID",
+        ),
+        posting(
+          "je_void_rev",
+          "2026-01-20",
+          "acct_rev",
+          "4000",
+          "Service Revenue",
+          "REVENUE",
+          -100_000,
+          "VOID",
+        ),
         // Large voided expense that must not appear in P&L or balance sheet
         posting("je_void_exp", "2026-01-22", "acct_rent", "5000", "Rent Expense", "EXPENSE", 50_000, "VOID"),
         posting("je_void_exp", "2026-01-22", "acct_cash", "1000", "Cash", "ASSET", -50_000, "VOID"),

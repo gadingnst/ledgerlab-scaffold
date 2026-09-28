@@ -10,7 +10,14 @@ import type {
   Paginated,
   PostingRow,
 } from "@ledgerlab/shared";
-import { ConflictError, NotFoundError, UnbalancedEntryError, createId, isBalanced, sumMinor } from "@ledgerlab/shared";
+import {
+  ConflictError,
+  NotFoundError,
+  UnbalancedEntryError,
+  createId,
+  isBalanced,
+  sumMinor,
+} from "@ledgerlab/shared";
 import { accounts, journalEntries, journalLines } from "./schema";
 import type { Database } from "./client";
 

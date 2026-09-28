@@ -21,7 +21,9 @@ async function main(): Promise<void> {
     const force = process.argv.includes("--force") || process.argv.includes("-f");
     const { total } = await repo.listJournalEntries({ page: 1, pageSize: 1 });
     if (total > 0 && !force) {
-      console.log(`Seed skipped: ${total} journal entries already present. Pass --force to reset and re-seed.`);
+      console.log(
+        `Seed skipped: ${total} journal entries already present. Pass --force to reset and re-seed.`,
+      );
       return;
     }
     if (total > 0 && force) {

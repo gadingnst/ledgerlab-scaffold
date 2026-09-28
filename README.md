@@ -125,8 +125,8 @@ evidenced** (a command, a file, or a screenshot in your submission).
 
 ### G8 — Build your own sub-agents (required)
 
-- [ ] At least **three** working sub-agents under [`.opencode/agent/`](.opencode/agent/).
-- [ ] Starter agents are provided (`ledger-architect`, `ui-unslop`,
+- [x] At least **three** working sub-agents under [`.opencode/agent/`](.opencode/agent/).
+- [x] Starter agents are provided (`ledger-architect`, `ui-unslop`,
       `test-runner`, `deploy-security`) — you must **extend or replace** them
       with agents that fit your workflow, and demonstrate them working.
 - [ ] See [`docs/SUBAGENTS.md`](docs/SUBAGENTS.md).

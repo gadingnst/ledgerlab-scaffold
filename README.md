@@ -133,17 +133,17 @@ evidenced** (a command, a file, or a screenshot in your submission).
 
 ### G9 — Infrastructure plan (required)
 
-- [ ] Produce `docs/INFRASTRUCTURE-PLAN.md` from the template: target topology,
+- [x] Produce `docs/INFRASTRUCTURE-PLAN.md` from the template: target topology,
       environments, compute and scaling, data durability with **RPO/RTO and an
       actually-performed restore drill**, networking/edge, secrets and identity,
       CI/CD and rollback, observability with SLOs, a cost model with arithmetic,
       failure modes, and at least three ADRs with rejected options.
-- [ ] Every section is specific and matches what is really deployed.
+- [x] Every section is specific and matches what is really deployed.
 - [ ] See [`docs/INFRASTRUCTURE-PLAN.md`](docs/INFRASTRUCTURE-PLAN.md).
 
 ### G10 — Next-phase development plan (required)
 
-- [ ] Produce `docs/NEXT-PHASE-PLAN.md`: measurable outcomes tied to
+- [x] Produce `docs/NEXT-PHASE-PLAN.md`: measurable outcomes tied to
       stakeholders, a stated prioritisation method, three milestones with
       testable exit criteria and dates, delivery capacity and the next hires,
       technical workstreams, risks, metrics with sources, and what you are

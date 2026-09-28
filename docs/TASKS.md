@@ -66,24 +66,24 @@ Legend: **P0** blocks everything · **P1** core · **P2** required for full mark
 
 ## P2 — Infrastructure plan (G9)
 
-- [ ] Copy [`INFRASTRUCTURE-PLAN.md`](INFRASTRUCTURE-PLAN.md) to
+- [x] Copy [`INFRASTRUCTURE-PLAN.md`](INFRASTRUCTURE-PLAN.md) to
       `docs/INFRASTRUCTURE-PLAN.md` and fill every section.
-- [ ] Draw the target topology and make sure it matches what is actually deployed.
-- [ ] State RPO/RTO and **perform a restore drill**; record the duration and result.
-- [ ] Show the capacity arithmetic (requests/sec per replica, DB connections, storage growth).
-- [ ] Cost the plan at 1× / 3× / 10× traffic and name what breaks first.
-- [ ] Write ≥3 ADRs with genuinely rejected options.
-- [ ] Verify the security controls table links to evidence, not intent.
+- [x] Draw the target topology and make sure it matches what is actually deployed.
+- [x] State RPO/RTO and **perform a restore drill**; record the duration and result.
+- [x] Show the capacity arithmetic (requests/sec per replica, DB connections, storage growth).
+- [x] Cost the plan at 1× / 3× / 10× traffic and name what breaks first.
+- [x] Write ≥3 ADRs with genuinely rejected options.
+- [x] Verify the security controls table links to evidence, not intent.
 
 ## P2 — Next-phase development plan (G10)
 
-- [ ] Copy [`NEXT-PHASE-PLAN.md`](NEXT-PHASE-PLAN.md) to
+- [x] Copy [`NEXT-PHASE-PLAN.md`](NEXT-PHASE-PLAN.md) to
       `docs/NEXT-PHASE-PLAN.md` and fill every section.
-- [ ] Define 3–5 measurable outcomes tied to a named stakeholder.
-- [ ] Prioritise with a stated method (RICE or your own) and show the trade-offs.
-- [ ] Three milestones with testable exit criteria, working back from bank go-live.
-- [ ] Be honest about capacity; name the next two hires and why.
-- [ ] List what you are explicitly deferring, with reasons.
+- [x] Define 3–5 measurable outcomes tied to a named stakeholder.
+- [x] Prioritise with a stated method (RICE or your own) and show the trade-offs.
+- [x] Three milestones with testable exit criteria, working back from bank go-live.
+- [x] Be honest about capacity; name the next two hires and why.
+- [x] List what you are explicitly deferring, with reasons.
 
 ## P3 — Bonus (Cloudflare + TLD)
 

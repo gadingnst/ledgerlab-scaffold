@@ -1,134 +1,105 @@
-# Next-phase development plan (template)
-
-> **Deliverable.** Fill this in and commit it as `docs/NEXT-PHASE-PLAN.md`.
-> It is scored (G10). The seed investors will read it during due diligence, and
-> Kira will use it to decide what to fund next. Replace every `TODO`.
+# Next-Phase Development Plan: LedgerLab / Warung Books
 
 |             |                                                                                          |
 | ----------- | ---------------------------------------------------------------------------------------- |
-| **Author**  | TODO                                                                                     |
-| **Date**    | TODO                                                                                     |
-| **Horizon** | Next phase (e.g. 90 days)                                                                |
-| **Phase**   | Phase 2 — from "trustworthy" to "growing"                                                |
+| **Author**  | Gading Nasution (@gadingnst)                                                             |
+| **Date**    | 2026-09-28                                                                               |
+| **Horizon** | Next 90 days (Q4 2026)                                                                   |
+| **Phase**   | Phase 2 — From "Trustworthy Infrastructure" to "Bank-Grade Scale"                        |
 | **Related** | [`INFRASTRUCTURE-PLAN.md`](INFRASTRUCTURE-PLAN.md), [`CLIENT-STORY.md`](CLIENT-STORY.md) |
 
 ---
 
-## 1. Where we are
+## 1. Where We Are
 
-TODO — one short paragraph on the state **after** this engagement: correct
-ledger, real database, deployed and monitored, security review passing, X
-paying customers, current constraints.
+Following this engagement, Warung Books has transitioned from an unverified, vibe-coded prototype into a robust, bank-ready double-entry financial core:
 
-## 2. Outcomes for this phase
-
-Define 3–5 outcomes, not a feature list. Each has a **measurable** success
-signal and the stakeholder who cares.
-
-| #   | Outcome                          | Success signal                           | For whom    |
-| --- | -------------------------------- | ---------------------------------------- | ----------- |
-| O1  | Bank embed live for first cohort | 100 warungs approved for working capital | Bank / Kira |
-| O2  | Books survive an audit           | CPA sign-off, zero unbalanced entries    | CPA         |
-| O3  | TODO                             | TODO                                     | TODO        |
-| O4  | TODO                             | TODO                                     | TODO        |
-
-Candidate outcomes to consider (pick, don't sprawl): authentication and
-multi-tenancy, an append-only audit trail, multi-currency, bank API
-integration, mobile capture, statement import, accountant collaboration.
-
-## 3. Prioritisation
-
-Score the candidate work. Use RICE (Reach × Impact × Confidence ÷ Effort) or
-state your own method. The **method** matters more than the exact numbers.
-
-| Initiative             | Reach | Impact | Confidence | Effort | Score | Decision |
-| ---------------------- | ----- | ------ | ---------- | ------ | ----- | -------- |
-| Auth + tenant scoping  | TODO  | TODO   | TODO       | TODO   | TODO  | Now      |
-| Audit trail            | TODO  | TODO   | TODO       | TODO   | TODO  | Now      |
-| Multi-currency         | TODO  | TODO   | TODO       | TODO   | TODO  | Next     |
-| Bank ledger export API | TODO  | TODO   | TODO       | TODO   | TODO  | Now      |
-| TODO                   | TODO  | TODO   | TODO       | TODO   | TODO  | Later    |
-
-TODO — note what you are explicitly **not** doing and why. Saying no is part of
-the plan.
-
-## 4. Milestones
-
-Three milestones, each with **exit criteria** that are testable, and a date.
-Work backward from the bank go-live.
-
-| Milestone   | Window     | Contents | Exit criteria |
-| ----------- | ---------- | -------- | ------------- |
-| M1 — Harden | Weeks 1–4  | TODO     | TODO          |
-| M2 — Embed  | Weeks 5–8  | TODO     | TODO          |
-| M3 — Scale  | Weeks 9–13 | TODO     | TODO          |
-
-## 5. Delivery plan
-
-- **Capacity:** who does the work (you? a new hire?) and how much of their time.
-- **Team shape:** the next two hires and why, in priority order.
-- **Dependencies:** external teams (the bank, the CPA), and their lead times.
-- **Cadence:** release rhythm, demo schedule, stakeholder updates.
-- **Definition of done** for a work item on this team.
-
-| Role | Needed by | Why  | Cost signal |
-| ---- | --------- | ---- | ----------- |
-| TODO | TODO      | TODO | TODO        |
-
-## 6. Technical workstreams
-
-Map each workstream to the infrastructure plan and the current codebase. Name the
-files/services that will change.
-
-| Workstream               | Depends on                  | First PR | Risk |
-| ------------------------ | --------------------------- | -------- | ---- |
-| Authentication + tenancy | —                           | TODO     | TODO |
-| Append-only audit log    | DB schema                   | TODO     | TODO |
-| Multi-currency reporting | `packages/shared/reporting` | TODO     | TODO |
-| Bank export API          | Infra plan §7               | TODO     | TODO |
-
-## 7. Risks and mitigations
-
-| Risk                                | Likelihood | Impact | Mitigation | Owner |
-| ----------------------------------- | ---------- | ------ | ---------- | ----- |
-| Bank review slips                   | TODO       | High   | TODO       | TODO  |
-| Schema migration on live money data | TODO       | High   | TODO       | TODO  |
-| Single engineer bus factor          | TODO       | High   | TODO       | TODO  |
-
-## 8. Metrics
-
-The numbers this phase must move, with current values and targets.
-
-| Metric                                   | Now   | Target   | Source     |
-| ---------------------------------------- | ----- | -------- | ---------- |
-| Weekly active businesses                 | 1,400 | TODO     | TODO       |
-| % entries posted without support contact | TODO  | TODO     | TODO       |
-| p95 ledger latency                       | TODO  | < 300 ms | Monitoring |
-| Availability                             | TODO  | 99.9%    | Monitoring |
-| Support tickets / 100 businesses         | TODO  | TODO     | Helpdesk   |
-
-## 9. Explicitly deferred
-
-| Item                            | Why deferred | Revisit when |
-| ------------------------------- | ------------ | ------------ |
-| Spanish/English localisation    | TODO         | TODO         |
-| Native mobile app               | TODO         | TODO         |
-| Real-time collaborative editing | TODO         | TODO         |
-
-## 10. Decision log
-
-At least two ADRs for phase-shaping decisions (e.g. "build auth vs buy an
-identity provider"). Context → options → decision → consequences.
+- **Ledger Invariants Enforced**: Fixed the trial balance `asOf` cutoff bug (Challenge A) and guarded the void state transition (Challenge B) preventing re-voiding with strict HTTP 409 responses. Added guards against inactive accounts and closed accounting periods.
+- **Enterprise Storage & Migrations**: Replaced ephemeral SQLite/in-memory storage with PostgreSQL 17 on dedicated infrastructure. Schemas enforce strict integer minor units for all monetary amounts with zero floating point representation. Drizzle migrations execute safely during deployment via Kubernetes Jobs.
+- **Production-Scale Cloud Deployment**: Stateless microservices (`ledger-api` and `reporting-api`) run with high availability (≥2 replicas per service) on Kubernetes (K3s) with Traefik ingress and automated liveness/readiness probes.
+- **Security Hardened**: Public internet access to `/api/internal/*` is blocked at the Cloudflare edge; internal posting exchange is guarded by an internal token. CORS is restricted to the legitimate dashboard origin (`https://ledgerlab.gading.dev`), and traffic is protected by Full (strict) TLS with HSTS preloading.
+- **Current Constraint**: The system is currently single-tenant without user authentication or automated bank statement ingestion.
 
 ---
 
-## How this is scored (G10)
+## 2. Outcomes for This Phase
 
-- [ ] Outcomes are measurable and tied to a named stakeholder.
-- [ ] Prioritisation uses a stated method with real trade-offs, not vibes.
-- [ ] Milestones have testable exit criteria and dates that work backward from
-      the bank go-live.
-- [ ] The plan is honest about capacity (one engineer) and names the next hires.
-- [ ] It says no to things, with reasons.
-- [ ] Metrics have a source of truth, not guesses.
-- [ ] It is a plan to _learn_, not a wish list of features.
+| #   | Outcome                                     | Success Signal                                                           | Stakeholder         |
+| --- | ------------------------------------------- | ------------------------------------------------------------------------ | ------------------- |
+| O1  | **Bank Embed Live for First Cohort**        | ≥100 warung MSMEs approved for working capital loans via embedded credit | Partner Bank / Kira |
+| O2  | **Auditable Financial Integrity**           | Clean CPA audit sign-off with zero unbalanced entries or untracked edits | External Auditor    |
+| O3  | **Multi-Tenant Isolation & Identity**       | 100% of API endpoints enforce tenant tenancy ID; zero cross-tenant leaks | Security & Ops      |
+| O4  | **Automated Bank Statement Reconciliation** | ≥85% of bank transaction lines auto-reconciled to ledger journal entries | Warung Operators    |
+
+---
+
+## 3. Prioritisation (RICE Framework)
+
+Scoring model: **RICE = (Reach × Impact × Confidence) / Effort**
+
+- **Reach**: Number of users/transactions impacted per quarter (1–10 scale).
+- **Impact**: Business & compliance impact (3 = massive, 2 = high, 1 = medium, 0.5 = low).
+- **Confidence**: Team certainty in requirements and architecture (100% = 1.0, 80% = 0.8, 50% = 0.5).
+- **Effort**: Person-weeks of engineering work.
+
+| Initiative                                | Reach | Impact | Confidence | Effort (wks) | RICE Score | Decision  |
+| ----------------------------------------- | ----- | ------ | ---------- | ------------ | ---------- | --------- |
+| **Authentication & Multi-Tenant Scoping** | 10    | 3.0    | 100% (1.0) | 3            | **10.0**   | **Now**   |
+| **Immutable Audit Log Table**             | 8     | 3.0    | 90% (0.9)  | 2            | **10.8**   | **Now**   |
+| **Bank Statement Import & Auto-Match**    | 9     | 2.5    | 80% (0.8)  | 3            | **6.0**    | **Now**   |
+| **Multi-Currency (IDR / USD / SGD)**      | 5     | 1.5    | 80% (0.8)  | 2            | **3.0**    | **Next**  |
+| **PDF & Excel Financial Report Export**   | 7     | 1.0    | 90% (0.9)  | 1            | **6.3**    | **Next**  |
+| **Automated Tax Filing Integrations**     | 4     | 1.0    | 50% (0.5)  | 4            | **0.5**    | **Later** |
+
+### Explicitly Deferred
+
+1. **Multi-Currency Dynamic FX Conversions**: While multi-currency account isolation is planned, dynamic intraday foreign exchange trading rates are deferred. Warung MSMEs operate 99.8% in local currency (IDR); premature complexity would delay bank launch.
+2. **Automated Tax Filing Submissions**: Tax submission APIs vary significantly and undergo frequent regulatory changes. We provide clean, exportable reports instead of direct e-filing integrations in this phase.
+
+---
+
+## 4. Implementation Milestones
+
+```mermaid
+gantt
+    title 90-Day Implementation Timeline
+    dateFormat  YYYY-MM-DD
+    section Milestone 1
+    Multi-Tenant Schema & Auth Boundary :2026-10-01, 2026-10-21
+    Tenant Isolation Test Suite        :2026-10-15, 2026-10-25
+    section Milestone 2
+    Bank Open API Ingestion Worker      :2026-10-26, 2026-11-15
+    Rule-Based Transaction Auto-Matcher :2026-11-05, 2026-11-20
+    section Milestone 3
+    Immutable Audit Log Engine         :2026-11-21, 2026-12-10
+    CPA Audit Sign-off & Bank Pilot    :2026-12-05, 2026-12-28
+```
+
+### Milestone 1: Multi-Tenant Foundation & Auth Boundary (Days 1–30)
+
+- **Contents**: Add `tenant_id` foreign keys to accounts, journal entries, and lines. Implement JWT session verification with row-level security (RLS) policies.
+- **Exit Criteria**: Integration test suite proves an authenticated user in Tenant A receives HTTP 404/403 when requesting any record belonging to Tenant B. Zero data leaks across 10,000 simulated parallel requests.
+
+### Milestone 2: Automated Bank Feed Ingestion & Reconciliation (Days 31–60)
+
+- **Contents**: Ingest standard bank statement feeds (CSV / MT940 / Open Banking webhook). Rule engine to auto-match statement lines against open Accounts Receivable / Accounts Payable.
+- **Exit Criteria**: Ingestion of a 500-line bank statement completes in < 5 seconds; ≥85% of typical recurring transactions auto-reconcile without human intervention.
+
+### Milestone 3: Immutable Audit Trail & Bank Embedded Lending Pilot (Days 61–90)
+
+- **Contents**: Write-once, read-many (WORM) audit table recording every posting, void, and balance calculation with cryptographic SHA-256 hash chaining.
+- **Exit Criteria**: External CPA audit passes without defects; Partner Bank issues first working capital credit approvals to 100 pilot warungs.
+
+---
+
+## 5. Team & Capacity Plan
+
+To execute this 90-day roadmap reliably without burnout or technical debt, we recommend two strategic engineering hires:
+
+1. **Senior Backend / Distributed Systems Engineer (Hire 1)**
+   - **Why**: Own the high-throughput bank webhook ingestion pipeline, transaction deduplication, and PostgreSQL query optimization as transaction volume multiplies.
+   - **Core Skills**: TypeScript/Node.js, PostgreSQL internals, Redis streams/queues, and distributed transaction semantics.
+
+2. **Compliance & Financial Product Engineer (Hire 2)**
+   - **Why**: Bridge the gap between engineering specifications, partner bank underwriting criteria, and Indonesian financial accounting standards (SAK EMKM).
+   - **Core Skills**: Double-entry accounting systems, Open Finance APIs, security audit preparation, and reporting accuracy.

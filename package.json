@@ -21,7 +21,8 @@
     "guide:html": "node scripts/build-guide.mjs --html-only",
     "clean": "turbo run clean && rm -rf node_modules",
     "db:seed": "./scripts/seed-db.sh",
-    "deploy:k8s": "./deployment/deploy-k8s.sh"
+    "deploy:k8s": "./deployment/deploy-k8s.sh",
+    "db:drill": "./scripts/restore-drill.sh"
   },
   "devDependencies": {
     "@types/node": "^22.13.1",

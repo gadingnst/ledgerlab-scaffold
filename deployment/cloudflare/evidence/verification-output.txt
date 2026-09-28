@@ -1,0 +1,107 @@
+================================================================================
+Cloudflare Layer Verification Evidence — LedgerLab (gading.dev)
+Date: 2026-09-28
+================================================================================
+
+1. DNS ANYCAST PROXIED VERIFICATION (dig)
+--------------------------------------------------------------------------------
+$ dig +short ledgerlab.gading.dev
+172.67.202.247
+104.21.65.174
+
+$ dig +short ledger-api.gading.dev
+104.21.65.174
+172.67.202.247
+
+$ dig +short reporting-api.gading.dev
+172.67.202.247
+104.21.65.174
+
+All records resolve directly to Cloudflare Edge Anycast IPs.
+
+2. TLS & EDGE HEADER VERIFICATION (curl -sI)
+--------------------------------------------------------------------------------
+$ curl -sI https://ledger-api.gading.dev/health
+HTTP/2 200 
+date: Mon, 28 Sep 2026 16:25:40 GMT
+content-type: application/json
+vary: Origin
+cf-cache-status: DYNAMIC
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=nLu0MqMQ6LnQo9a5RSNJU7EEBGV%2BOGO9KgaBRyf1fKHqyRhXUsfpQHTLlh%2FMhwBB7u3Tvn50aAYg0032vfHFgoBC76vFd4jLGXadRr7YvxmFm8MmZflPeMnviVxok%2Brpq3wdiSwnjQ0%3D"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a4241afdce0bfd87-SIN
+alt-svc: h3=":443"; ma=86400
+
+
+$ curl -sI https://reporting-api.gading.dev/health
+HTTP/2 200 
+date: Mon, 28 Sep 2026 16:25:41 GMT
+content-type: application/json
+vary: Origin
+cf-cache-status: DYNAMIC
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=wF%2BfT3JhBmDnxd4jTI%2F6HP%2FZ7rI%2FXRyfezEKv8A%2BoKmUT2QRC6yWHHcjPWX4ALIwak9l4oWmUxhPnEOJ%2FTXm4bQdBfrBgOIi8XzSyKFF4fO98qeJG7QYd5ZQgTEJ7F5QjLkL8nW%2FmG9SoS4%3D"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a4241b00682cd8fd-HKG
+alt-svc: h3=":443"; ma=86400
+
+
+3. WAF EDGE BLOCKING FOR /api/internal/* (curl -i -X POST)
+--------------------------------------------------------------------------------
+$ curl -s -i -X POST https://ledger-api.gading.dev/api/internal/postings
+HTTP/2 403 
+date: Mon, 28 Sep 2026 16:25:41 GMT
+content-type: text/html; charset=UTF-8
+cache-control: private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+expires: Thu, 01 Jan 1970 00:00:01 GMT
+referrer-policy: same-origin
+x-frame-options: SAMEORIGIN
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=RkQrlBp6zt6%2FRklDh7TyWNrJeTodz86h3LNpk3NOPlVEeOsqGijtrzLswot9OKzGueCqOpvZy18EKVdSEwpP8Sjhd%2Bu8F1nWp82n5ezeFYGqgaV7%2F23X2sjmGdDDEPnLrXu17qsC1u8%3D"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a4241b02fdeafdc4-SIN
+alt-svc: h3=":443"; ma=86400
+
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en-US"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en-US"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en-US"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en-US"> <!--<![endif]-->
+<head>
+<title>Attention Required! | Cloudflare</title>
+<meta charset="UTF-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+
+$ curl -s -i -X POST https://reporting-api.gading.dev/api/internal/postings
+HTTP/2 403 
+date: Mon, 28 Sep 2026 16:25:41 GMT
+content-type: text/html; charset=UTF-8
+cache-control: private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+expires: Thu, 01 Jan 1970 00:00:01 GMT
+referrer-policy: same-origin
+x-frame-options: SAMEORIGIN
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=gs658ZGTlB4KJdSGqBOPys9lTv9tAVFiMM5QEmhq8RHJujR6ICqQS9qf9lMzz0%2F2IyT4%2BhTJki7XXyBQ%2FBLKKrYjS%2FfqP4BJ2GbqewswQvjNYCLps60Q7R9nozKxu3RZ%2BTSvbzJGLhzqPJw%3D"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a4241b04399faecd-SIN
+alt-svc: h3=":443"; ma=86400
+
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en-US"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en-US"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en-US"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en-US"> <!--<![endif]-->
+<head>
+<title>Attention Required! | Cloudflare</title>
+<meta charset="UTF-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+
+Result: Expected 403 Forbidden directly from Cloudflare Edge (cf-ray logged).
+WAF rule "Block public access to internal endpoints" stopped requests before origin.

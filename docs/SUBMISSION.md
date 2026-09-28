@@ -51,10 +51,15 @@
 - **Internal API Protection**: Guarded `/api/internal/*` service-to-service endpoints with `INTERNAL_API_TOKEN` (`Authorization: Bearer <token>`). Public requests return `HTTP 401 UNAUTHORIZED`.
 - **CORS Restricted**: Locked CORS origin strictly to `https://ledgerlab.gading.dev`. Untrusted origins receive no allow headers.
 
-### G6 — Cloudflare + Custom TLD Domain
+### G6 — Cloudflare + Custom TLD Domain (Scored Bonus)
 
-- **Custom Domain on Real TLD**: Configured `*.gading.dev` DNS routed through Cloudflare Zero-Trust Tunnel.
-- **TLS Full (strict)**: Modern cipher suites and HSTS enabled.
+- **Custom Domain on Real TLD**: Configured `*.gading.dev` DNS routed through Cloudflare Zero-Trust Tunnel (`gading-lab`, UUID `a8e04862-b1c5-42f0-b8e4-0efbb87660cc`).
+- **TLS Full**: Proxied with TLS 1.3 / 1.2 and modern cipher suites.
+- **Edge WAF Custom Rule**: Created custom WAF rule `Block public access to internal endpoints` (`starts_with(http.request.uri.path, "/api/internal")`). Public calls to `/api/internal/*` return `HTTP 403 Forbidden` at Cloudflare Edge before reaching the tunnel origin.
+- **Committed Verification Evidence**:
+  - Live command outputs: [`deployment/cloudflare/evidence/verification-output.txt`](../deployment/cloudflare/evidence/verification-output.txt)
+  - SSL/TLS Overview screenshot: [`deployment/cloudflare/evidence/ssl-tls-overview.png`](../deployment/cloudflare/evidence/ssl-tls-overview.png)
+  - Cloudflare Security WAF Block event screenshot: [`deployment/cloudflare/evidence/waf-block-internal-event.png`](../deployment/cloudflare/evidence/waf-block-internal-event.png)
 
 ### G7 — AI Usage with Prompt Log
 

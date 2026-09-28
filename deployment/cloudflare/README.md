@@ -62,17 +62,28 @@ Enable **Brotli**. Set **Browser Cache TTL** to "Respect Existing Headers".
   `cloudflared tunnel create ledgerlab` then route `api.ledgerlab.example.com`
   to `http://localhost:4001`.
 
-## 5. Verification evidence (include in your submission)
+## 5. Verification evidence (committed in repo)
+
+The live verification evidence for `gading.dev` is committed in `deployment/cloudflare/evidence/`:
+
+- **Terminal outputs**: [`evidence/verification-output.txt`](evidence/verification-output.txt) (contains live `dig`, `curl -sI`, and WAF `403` edge block outputs).
+- **SSL/TLS Overview**: ![SSL/TLS Overview](evidence/ssl-tls-overview.png)
+- **WAF Security Block Event**: ![WAF Blocked Event](evidence/waf-block-internal-event.png)
 
 ```bash
-dig +short ledgerlab.example.com            # Cloudflare IPs
-curl -sI https://api.ledgerlab.example.com/health   # HTTP/2, cf-ray, HSTS
-curl -s -o /dev/null -w '%{http_code}\n' -X POST https://api.ledgerlab.example.com/api/internal/postings
-# expected: 403/404 from the edge, never 200
-```
+# 1. Anycast Cloudflare IPs
+dig +short ledgerlab.gading.dev
+# 172.67.202.247
+# 104.21.65.174
 
-Also screenshot the Cloudflare **Security → Events** page showing a blocked
-request, and the **SSL/TLS** page showing Full (strict).
+# 2. TLS Full + HTTP/2 + cf-ray
+curl -sI https://ledger-api.gading.dev/health
+# HTTP/2 200, cf-ray: a4241afdce0bfd87-SIN, server: cloudflare
+
+# 3. WAF Edge Block on /api/internal/*
+curl -s -o /dev/null -w '%{http_code}\n' -X POST https://ledger-api.gading.dev/api/internal/postings
+# 403 (Blocked at edge before hitting origin tunnel)
+```
 
 ## 6. Terraform sketch (optional)
 

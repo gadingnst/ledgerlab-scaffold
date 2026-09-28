@@ -59,7 +59,7 @@ evidenced** (a command, a file, or a screenshot in your submission).
       the **source**, not the tests. The two defects are documented in
       [`apps/ledger-api/src/challenges/`](apps/ledger-api/src/challenges/).
 - [x] `pnpm typecheck && pnpm test && pnpm build` all pass on a clean checkout.
-- [ ] No `TODO(candidate)` left unresolved in code paths you claim are finished.
+- [x] No `TODO(candidate)` left unresolved in code paths you claim are finished.
 
 ### G1 — Finish the core ledger
 
@@ -84,7 +84,7 @@ evidenced** (a command, a file, or a screenshot in your submission).
       PostgreSQL is wired up; **MySQL, MariaDB, SQLite/libSQL, or SQL Server are
       acceptable** if you implement the `LedgerRepository` port.
 - [x] Schema is migrated (not auto-synced) and seeded via a repeatable script.
-- [ ] See [`docs/DATABASE.md`](docs/DATABASE.md).
+- [x] See [`docs/DATABASE.md`](docs/DATABASE.md).
 
 ### G4 — Production-scale deployment
 
@@ -93,7 +93,7 @@ evidenced** (a command, a file, or a screenshot in your submission).
 - [x] Stateless services, ≥2 replicas (or `min-instances ≥ 1`), managed database,
       connection pooling, graceful shutdown.
 - [x] A **one-command** reproducible deploy is documented and was actually run.
-- [ ] See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
+- [x] See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
 ### G5 — Security-aware hardening
 
@@ -103,17 +103,17 @@ evidenced** (a command, a file, or a screenshot in your submission).
 - [x] `CORS_ORIGINS` restricted to the real dashboard origin (never `*` in prod).
 - [x] HTTPS/HSTS, secure headers, least-privilege DB user, no stack traces in
       API error bodies, rate limiting in front of `/api/*`.
-- [ ] See [`docs/SECURITY.md`](docs/SECURITY.md).
+- [x] See [`docs/SECURITY.md`](docs/SECURITY.md).
 
 ### G6 — Cloudflare + custom TLD domain (scored bonus)
 
 - [x] A **real TLD** you control (not `*.onrender.com` / `*.run.app`).
 - [x] Cloudflare proxying, TLS **Full (strict)**, WAF managed rules, and a
       rate-limit rule on `/api/*`.
-- [ ] `/api/internal/*` blocked at the edge; cache rules separate static assets
+- [x] `/api/internal/*` blocked at the edge; cache rules separate static assets
       from API traffic.
-- [ ] Evidence: `dig`, `curl -I`, and a WAF event screenshot.
-- [ ] See [`deployment/cloudflare/README.md`](deployment/cloudflare/README.md).
+- [x] Evidence: `dig`, `curl -I`, and a WAF event screenshot.
+- [x] See [`deployment/cloudflare/README.md`](deployment/cloudflare/README.md).
 
 ### G7 — AI usage with a prompt log (required)
 
@@ -121,7 +121,7 @@ evidenced** (a command, a file, or a screenshot in your submission).
 - [x] `pnpm ai:verify` passes in CI.
 - [x] Each entry has: tool, model, task, prompt, summary, decision, files.
 - [x] **Show your rejected AI suggestions too** — judgment is what is scored.
-- [ ] See [`docs/AI-USAGE.md`](docs/AI-USAGE.md).
+- [x] See [`docs/AI-USAGE.md`](docs/AI-USAGE.md).
 
 ### G8 — Build your own sub-agents (required)
 
@@ -129,7 +129,7 @@ evidenced** (a command, a file, or a screenshot in your submission).
 - [x] Starter agents are provided (`ledger-architect`, `ui-unslop`,
       `test-runner`, `deploy-security`) — you must **extend or replace** them
       with agents that fit your workflow, and demonstrate them working.
-- [ ] See [`docs/SUBAGENTS.md`](docs/SUBAGENTS.md).
+- [x] See [`docs/SUBAGENTS.md`](docs/SUBAGENTS.md).
 
 ### G9 — Infrastructure plan (required)
 
@@ -139,7 +139,7 @@ evidenced** (a command, a file, or a screenshot in your submission).
       CI/CD and rollback, observability with SLOs, a cost model with arithmetic,
       failure modes, and at least three ADRs with rejected options.
 - [x] Every section is specific and matches what is really deployed.
-- [ ] See [`docs/INFRASTRUCTURE-PLAN.md`](docs/INFRASTRUCTURE-PLAN.md).
+- [x] See [`docs/INFRASTRUCTURE-PLAN.md`](docs/INFRASTRUCTURE-PLAN.md).
 
 ### G10 — Next-phase development plan (required)
 
@@ -148,7 +148,7 @@ evidenced** (a command, a file, or a screenshot in your submission).
       testable exit criteria and dates, delivery capacity and the next hires,
       technical workstreams, risks, metrics with sources, and what you are
       explicitly deferring.
-- [ ] See [`docs/NEXT-PHASE-PLAN.md`](docs/NEXT-PHASE-PLAN.md).
+- [x] See [`docs/NEXT-PHASE-PLAN.md`](docs/NEXT-PHASE-PLAN.md).
 
 ---
 

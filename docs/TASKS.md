@@ -61,7 +61,7 @@ Legend: **P0** blocks everything · **P1** core · **P2** required for full mark
 - [x] Secrets in the platform store; **no** secret in the repo.
 - [x] `CORS_ORIGINS` restricted; `INTERNAL_API_TOKEN` set.
 - [x] HSTS + secure headers at the edge.
-- [ ] Rate limit on `/api/*`.
+- [x] Rate limit on `/api/*`.
 - [x] Migrations run as a job/step, not at container start.
 
 ## P2 — Infrastructure plan (G9)
@@ -89,10 +89,10 @@ Legend: **P0** blocks everything · **P1** core · **P2** required for full mark
 
 - [x] Custom domain on a real TLD, proxied through Cloudflare.
 - [x] TLS Full (strict), Always Use HTTPS, HSTS.
-- [ ] WAF managed rules + a rate-limit rule.
-- [ ] `/api/internal/*` blocked at the edge.
-- [ ] Cache rules: assets cached, API bypassed.
-- [ ] Evidence committed (`dig`, `curl -I`, WAF event screenshot).
+- [x] WAF managed rules + a rate-limit rule.
+- [x] `/api/internal/*` blocked at the edge.
+- [x] Cache rules: assets cached, API bypassed.
+- [x] Evidence committed (`dig`, `curl -I`, WAF event screenshot).
 
 ## P3 — Extra credit
 

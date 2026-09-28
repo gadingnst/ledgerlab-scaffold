@@ -147,6 +147,20 @@ describe("ledger-api", () => {
     expect(after.data.balanced).toBe(true);
   });
 
+  it("rejects re-voiding an already-voided entry with 409 CONFLICT", async () => {
+    const listRes = await app.request("/api/journal-entries");
+    const entries = await json<Paginated<JournalEntry>>(listRes);
+    const target = entries.data[0]!;
+
+    const first = await app.request(`/api/journal-entries/${target.id}/void`, { method: "POST" });
+    expect(first.status).toBe(200);
+
+    const second = await app.request(`/api/journal-entries/${target.id}/void`, { method: "POST" });
+    expect(second.status).toBe(409);
+    const body = await json<ErrorBody>(second);
+    expect(body.error.code).toBe("CONFLICT");
+  });
+
   it("returns 404 for unknown routes with a structured error", async () => {
     const res = await app.request("/api/nope");
     expect(res.status).toBe(404);

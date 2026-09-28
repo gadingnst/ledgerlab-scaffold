@@ -62,6 +62,16 @@ describe("LedgerService business rules", () => {
     await expect(buildService().voidJournalEntry("je_missing")).rejects.toBeInstanceOf(NotFoundError);
   });
 
+  it("throws ConflictError when attempting to void an already-voided entry", async () => {
+    const service = buildService();
+    const entries = await service.listJournalEntries({ page: 1, pageSize: 20 });
+    const target = entries.data[0]!;
+
+    const voided = await service.voidJournalEntry(target.id);
+    expect(voided.status).toBe("VOID");
+    await expect(service.voidJournalEntry(target.id)).rejects.toBeInstanceOf(ConflictError);
+  });
+
   it("throws Conflict for duplicate account codes", async () => {
     const service = buildService();
     await expect(

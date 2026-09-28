@@ -10,6 +10,7 @@ import type {
   TrialBalance,
 } from "@ledgerlab/shared";
 import {
+  ConflictError,
   NotFoundError,
   UnbalancedEntryError,
   ValidationError,
@@ -89,6 +90,13 @@ export class LedgerService {
   }
 
   async voidJournalEntry(id: string): Promise<JournalEntry> {
+    const entry = await this.repo.getJournalEntry(id);
+    if (!entry) throw new NotFoundError(`Journal entry ${id} not found`);
+    if (entry.status !== "POSTED") {
+      throw new ConflictError(
+        `Journal entry ${id} cannot be voided: current status is ${entry.status} (only POSTED entries may be voided)`,
+      );
+    }
     const voided = await this.repo.voidJournalEntry(id);
     if (!voided) throw new NotFoundError(`Journal entry ${id} not found`);
     return voided;

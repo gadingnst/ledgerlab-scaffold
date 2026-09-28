@@ -1,13 +1,3 @@
-/**
- * CHALLENGE B — voiding must be a guarded state transition.
- *
- * Today `voidJournalEntry` sets status to VOID no matter the current status, so
- * an already-voided (or draft) entry can be "voided" again. In an accounting
- * system that is an audit-trail defect: the second void looks like a real event.
- *
- * The endpoint must return 409 CONFLICT when the entry is not POSTED.
- * Fix it so this suite goes green, then delete this comment block.
- */
 import { describe, expect, it } from "vitest";
 import type { JournalEntry, Paginated } from "@ledgerlab/shared";
 import { InMemoryLedgerRepository } from "@ledgerlab/db";

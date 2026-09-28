@@ -101,7 +101,7 @@ Legend: **P0** blocks everything · **P1** core · **P2** required for full mark
 - [ ] Audit trail: who changed what, when.
 - [x] CSV or PDF export for the trial balance.
 - [ ] OpenAPI spec generated from the route schemas.
-- [ ] A load test (`k6`/`autocannon`) with results committed.
+- [x] A load test (`k6`/`autocannon`) with results committed.
 
 ---
 

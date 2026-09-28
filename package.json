@@ -22,10 +22,13 @@
     "clean": "turbo run clean && rm -rf node_modules",
     "db:seed": "./scripts/seed-db.sh",
     "deploy:k8s": "./deployment/deploy-k8s.sh",
-    "db:drill": "./scripts/restore-drill.sh"
+    "db:drill": "./scripts/restore-drill.sh",
+    "load:test": "node scripts/load-test.mjs"
   },
   "devDependencies": {
+    "@types/autocannon": "^7.12.7",
     "@types/node": "^22.13.1",
+    "autocannon": "^8.0.0",
     "marked": "^18.0.14",
     "prettier": "^3.4.2",
     "turbo": "^2.4.0",

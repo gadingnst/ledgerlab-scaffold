@@ -1,13 +1,3 @@
-/**
- * CHALLENGE A — the trial balance must respect its `asOf` date.
- *
- * Today `buildTrialBalance` aggregates every posting in the repository and
- * ignores `asOf`, so a report "as of March" silently includes April's entries.
- * That is a correctness bug in an accounting product: it can misstate filed
- * figures.
- *
- * Fix it so this suite goes green, then delete this comment block.
- */
 import { describe, expect, it } from "vitest";
 import { InMemoryLedgerRepository } from "@ledgerlab/db";
 import { LedgerService } from "../services/ledger-service";

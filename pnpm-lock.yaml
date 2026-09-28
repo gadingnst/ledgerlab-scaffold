@@ -41,6 +41,9 @@ importers:
       hono:
         specifier: ^4.6.16
         version: 4.13.8
+      ioredis:
+        specifier: ^5.6.0
+        version: 5.11.1
       zod:
         specifier: ^3.24.1
         version: 3.25.76
@@ -75,6 +78,9 @@ importers:
       hono:
         specifier: ^4.6.16
         version: 4.13.8
+      ioredis:
+        specifier: ^5.6.0
+        version: 5.11.1
       zod:
         specifier: ^3.24.1
         version: 3.25.76

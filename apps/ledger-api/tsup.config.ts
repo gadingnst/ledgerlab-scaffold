@@ -10,5 +10,6 @@ export default defineConfig({
   sourcemap: true,
   dts: false,
   // Bundle workspace packages so the runtime image needs no workspace graph.
+  external: ["ioredis"],
   noExternal: [/^@ledgerlab\//],
 });

@@ -9,5 +9,6 @@ export default defineConfig({
   clean: true,
   sourcemap: true,
   dts: false,
+  external: ["ioredis"],
   noExternal: [/^@ledgerlab\//],
 });

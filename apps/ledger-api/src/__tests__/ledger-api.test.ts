@@ -4,8 +4,7 @@ import { InMemoryLedgerRepository } from "@ledgerlab/db";
 import { createLedgerApp } from "../app";
 import { LedgerService } from "../services/ledger-service";
 
-function buildApp() {
-  const repository = new InMemoryLedgerRepository({ seed: true });
+function buildApp(repository = new InMemoryLedgerRepository({ seed: true })) {
   return createLedgerApp({ service: new LedgerService(repository) });
 }
 
@@ -117,6 +116,26 @@ describe("ledger-api", () => {
       ],
     });
     expect(res.status).toBe(404);
+  });
+
+  it("rejects a journal entry referencing an inactive account with 400", async () => {
+    const repo = new InMemoryLedgerRepository({ seed: true });
+    const localApp = buildApp(repo);
+    const accounts = await repo.listAccounts();
+    const cash = accounts.find((a) => a.code === "1000")!;
+    const revenue = accounts.find((a) => a.code === "4000")!;
+    cash.isActive = false;
+
+    const res = await postJson(localApp, "/api/journal-entries", {
+      date: "2026-01-15",
+      memo: "Inactive account entry",
+      lines: [
+        { accountId: cash.id, amountMinor: 100 },
+        { accountId: revenue.id, amountMinor: -100 },
+      ],
+    });
+    expect(res.status).toBe(400);
+    expect((await json<ErrorBody>(res)).error.code).toBe("VALIDATION_ERROR");
   });
 
   it("returns a balanced trial balance", async () => {

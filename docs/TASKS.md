@@ -26,12 +26,12 @@ Legend: **P0** blocks everything · **P1** core · **P2** required for full mark
 
 ## P1 — Core ledger correctness
 
-- [ ] Add a test that proves the balancing invariant for the Postgres adapter
+- [x] Add a test that proves the balancing invariant for the Postgres adapter
       too (or for the port in general), not just the in-memory one.
-- [ ] Reject journal lines that reference an **inactive** account.
-- [ ] Reject entries dated in a closed accounting period (add a `periods` table
+- [x] Reject journal lines that reference an **inactive** account.
+- [x] Reject entries dated in a closed accounting period (add a `periods` table
       or a simple `closedThrough` setting; document the rule you chose).
-- [ ] Income statement and balance sheet must exclude `VOID` entries — add a
+- [x] Income statement and balance sheet must exclude `VOID` entries — add a
       regression test.
 - [x] `pnpm --filter @ledgerlab/ledger-api test:challenges` green in CI.
 

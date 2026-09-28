@@ -11,6 +11,7 @@ import type {
 import {
   ConflictError,
   NotFoundError,
+  UnbalancedEntryError,
   SEED_ACCOUNTS,
   buildSeedEntries,
   createId,
@@ -141,8 +142,10 @@ export class InMemoryLedgerRepository implements LedgerRepository {
   async createJournalEntry(input: CreateJournalEntryInput): Promise<JournalEntry> {
     const amounts = input.lines.map((line) => line.amountMinor);
     if (!isBalanced(amounts)) {
-      throw new ConflictError(
-        `Journal entry does not balance: debits minus credits = ${sumMinor(amounts)} minor units`,
+      const total = sumMinor(amounts);
+      throw new UnbalancedEntryError(
+        `Journal entry does not balance: debits minus credits = ${total} minor units`,
+        total,
       );
     }
     for (const line of input.lines) {

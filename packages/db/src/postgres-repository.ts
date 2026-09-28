@@ -10,7 +10,7 @@ import type {
   Paginated,
   PostingRow,
 } from "@ledgerlab/shared";
-import { ConflictError, NotFoundError, createId, isBalanced, sumMinor } from "@ledgerlab/shared";
+import { ConflictError, NotFoundError, UnbalancedEntryError, createId, isBalanced, sumMinor } from "@ledgerlab/shared";
 import { accounts, journalEntries, journalLines } from "./schema";
 import type { Database } from "./client";
 
@@ -134,8 +134,10 @@ export class PostgresLedgerRepository implements LedgerRepository {
   async createJournalEntry(input: CreateJournalEntryInput): Promise<JournalEntry> {
     const amounts = input.lines.map((line) => line.amountMinor);
     if (!isBalanced(amounts)) {
-      throw new ConflictError(
-        `Journal entry does not balance: debits minus credits = ${sumMinor(amounts)} minor units`,
+      const total = sumMinor(amounts);
+      throw new UnbalancedEntryError(
+        `Journal entry does not balance: debits minus credits = ${total} minor units`,
+        total,
       );
     }
 

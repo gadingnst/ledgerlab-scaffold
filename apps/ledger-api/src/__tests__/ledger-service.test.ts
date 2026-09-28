@@ -72,6 +72,57 @@ describe("LedgerService business rules", () => {
     await expect(service.voidJournalEntry(target.id)).rejects.toBeInstanceOf(ConflictError);
   });
 
+  it("rejects journal entries referencing an inactive account", async () => {
+    const repo = new InMemoryLedgerRepository({ seed: true });
+    const service = new LedgerService(repo);
+    const accounts = await service.listAccounts();
+    const cash = accounts.find((a) => a.code === "1000")!;
+    const revenue = accounts.find((a) => a.code === "4000")!;
+
+    cash.isActive = false;
+
+    await expect(
+      service.createJournalEntry({
+        date: "2026-03-01",
+        memo: "Attempt entry with inactive account",
+        lines: [
+          { accountId: cash.id, amountMinor: 5000 },
+          { accountId: revenue.id, amountMinor: -5000 },
+        ],
+      }),
+    ).rejects.toBeInstanceOf(ValidationError);
+  });
+
+  it("rejects entries dated on or before a closed period cutoff", async () => {
+    const service = new LedgerService(new InMemoryLedgerRepository({ seed: true }), {
+      closedThrough: "2025-12-31",
+    });
+    const accounts = await service.listAccounts();
+    const cash = accounts.find((a) => a.code === "1000")!;
+    const revenue = accounts.find((a) => a.code === "4000")!;
+
+    await expect(
+      service.createJournalEntry({
+        date: "2025-12-31",
+        memo: "Closed period transaction",
+        lines: [
+          { accountId: cash.id, amountMinor: 1000 },
+          { accountId: revenue.id, amountMinor: -1000 },
+        ],
+      }),
+    ).rejects.toBeInstanceOf(ValidationError);
+
+    const valid = await service.createJournalEntry({
+      date: "2026-01-01",
+      memo: "Open period transaction",
+      lines: [
+        { accountId: cash.id, amountMinor: 1000 },
+        { accountId: revenue.id, amountMinor: -1000 },
+      ],
+    });
+    expect(valid.status).toBe("POSTED");
+  });
+
   it("throws Conflict for duplicate account codes", async () => {
     const service = buildService();
     await expect(

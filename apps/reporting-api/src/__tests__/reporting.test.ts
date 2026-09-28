@@ -90,6 +90,32 @@ describe("ReportingService", () => {
     const summary = await new ReportingService(source).dashboard("2026-01-31");
     expect(summary.cashMinor).toBe(3_800);
   });
+
+  it("excludes VOID entries from both income statement and balance sheet", async () => {
+    const sourceWithVoid: PostingSource = {
+      listPostings: async () => [
+        ...POSTINGS,
+        // Large voided revenue that must not appear in P&L or balance sheet
+        posting("je_void_rev", "2026-01-20", "acct_ar", "1100", "Accounts Receivable", "ASSET", 100_000, "VOID"),
+        posting("je_void_rev", "2026-01-20", "acct_rev", "4000", "Service Revenue", "REVENUE", -100_000, "VOID"),
+        // Large voided expense that must not appear in P&L or balance sheet
+        posting("je_void_exp", "2026-01-22", "acct_rent", "5000", "Rent Expense", "EXPENSE", 50_000, "VOID"),
+        posting("je_void_exp", "2026-01-22", "acct_cash", "1000", "Cash", "ASSET", -50_000, "VOID"),
+      ],
+    };
+    const reporting = new ReportingService(sourceWithVoid);
+
+    const pnl = await reporting.incomeStatement("2026-01-01", "2026-01-31");
+    expect(pnl.totalRevenueMinor).toBe(2_500);
+    expect(pnl.totalExpensesMinor).toBe(1_200);
+    expect(pnl.netIncomeMinor).toBe(1_300);
+
+    const bs = await reporting.balanceSheet("2026-12-31");
+    expect(bs.totalAssetsMinor).toBe(6_300);
+    expect(bs.totalLiabilitiesMinor).toBe(0);
+    expect(bs.totalEquityMinor).toBe(6_300);
+    expect(bs.outOfBalanceMinor).toBe(0);
+  });
 });
 
 describe("reporting-api routes", () => {

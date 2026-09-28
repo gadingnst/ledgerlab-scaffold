@@ -34,8 +34,28 @@ export interface ListEntriesParams {
  *
  * The repository only persists; it does not decide what is valid.
  */
+export interface LedgerServiceOptions {
+  /** If set, entries dated on or before this date are rejected. ISO YYYY-MM-DD. */
+  closedThrough?: string;
+}
+
 export class LedgerService {
-  constructor(private readonly repo: LedgerRepository) {}
+  private closedThrough?: string;
+
+  constructor(
+    private readonly repo: LedgerRepository,
+    options?: LedgerServiceOptions,
+  ) {
+    this.closedThrough = options?.closedThrough ?? process.env.CLOSED_THROUGH_DATE;
+  }
+
+  getClosedThrough(): string | undefined {
+    return this.closedThrough;
+  }
+
+  setClosedThrough(date?: string): void {
+    this.closedThrough = date;
+  }
 
   get repositoryKind(): "memory" | "postgres" {
     return this.repo.kind;
@@ -66,6 +86,11 @@ export class LedgerService {
   }
 
   async createJournalEntry(input: CreateJournalEntryInput): Promise<JournalEntry> {
+    if (this.closedThrough && input.date <= this.closedThrough) {
+      throw new ValidationError(
+        `Cannot post entry on ${input.date}: accounting period through ${this.closedThrough} is closed`,
+      );
+    }
     if (input.lines.length < 2) {
       throw new ValidationError("A journal entry requires at least two lines");
     }
@@ -82,9 +107,14 @@ export class LedgerService {
         total,
       );
     }
-    // Ensure every referenced account exists before persisting.
+    // Ensure every referenced account exists and is active before persisting.
     for (const line of input.lines) {
-      await this.getAccountOrThrow(line.accountId);
+      const account = await this.getAccountOrThrow(line.accountId);
+      if (!account.isActive) {
+        throw new ValidationError(
+          `Account ${account.code} (${account.name}) is inactive and cannot accept new journal lines`,
+        );
+      }
     }
     return this.repo.createJournalEntry(input);
   }

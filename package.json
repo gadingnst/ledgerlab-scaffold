@@ -19,7 +19,9 @@
     "ai:verify": "node scripts/verify-ai-log.mjs",
     "guide:pdf": "node scripts/build-guide.mjs",
     "guide:html": "node scripts/build-guide.mjs --html-only",
-    "clean": "turbo run clean && rm -rf node_modules"
+    "clean": "turbo run clean && rm -rf node_modules",
+    "db:seed": "./scripts/seed-db.sh",
+    "deploy:k8s": "./deployment/deploy-k8s.sh"
   },
   "devDependencies": {
     "@types/node": "^22.13.1",

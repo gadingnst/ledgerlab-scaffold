@@ -36,6 +36,7 @@ COPY apps/web/package.json           apps/web/
 COPY packages/db/package.json        packages/db/
 COPY packages/shared/package.json    packages/shared/
 COPY packages/ui/package.json        packages/ui/
+COPY packages/rate-limit/package.json packages/rate-limit/
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
     pnpm config set store-dir /pnpm/store && \
     pnpm install --frozen-lockfile

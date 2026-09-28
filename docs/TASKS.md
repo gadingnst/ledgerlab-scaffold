@@ -13,7 +13,7 @@ Legend: **P0** blocks everything · **P1** core · **P2** required for full mark
 
 ## P0 — Fix the errors
 
-- [ ] `pnpm --filter @ledgerlab/ledger-api test:challenges` is red. Make it green
+- [x] `pnpm --filter @ledgerlab/ledger-api test:challenges` is red. Make it green
       **by fixing production code**, never the specs.
   - **Challenge A** (`src/challenges/asof.challenge.ts`) — `buildTrialBalance`
     ignores `asOf`, so periods bleed into each other. Fix the date filtering in
@@ -22,7 +22,7 @@ Legend: **P0** blocks everything · **P1** core · **P2** required for full mark
     unguarded state change. Make `POSTED → VOID` the only legal transition and
     return `409 CONFLICT` otherwise. Touch `LedgerService` and both repository
     adapters.
-- [ ] `pnpm typecheck && pnpm test && pnpm build` all pass from a clean clone.
+- [x] `pnpm typecheck && pnpm test && pnpm build` all pass from a clean clone.
 
 ## P1 — Core ledger correctness
 
@@ -33,7 +33,7 @@ Legend: **P0** blocks everything · **P1** core · **P2** required for full mark
       or a simple `closedThrough` setting; document the rule you chose).
 - [ ] Income statement and balance sheet must exclude `VOID` entries — add a
       regression test.
-- [ ] `pnpm --filter @ledgerlab/ledger-api test:challenges` green in CI.
+- [x] `pnpm --filter @ledgerlab/ledger-api test:challenges` green in CI.
 
 ## P2 — Product quality
 
@@ -48,21 +48,21 @@ Legend: **P0** blocks everything · **P1** core · **P2** required for full mark
 
 ## P2 — Database
 
-- [ ] Run against a real database (`docs/DATABASE.md`). PostgreSQL is wired;
+- [x] Run against a real database (`docs/DATABASE.md`). PostgreSQL is wired;
       MySQL/SQLite are accepted if you implement the port.
-- [ ] Migrations applied as a deploy step, not on boot.
-- [ ] Seeding is idempotent and scripted.
-- [ ] Connection pooling configured and documented.
+- [x] Migrations applied as a deploy step, not on boot.
+- [x] Seeding is idempotent and scripted.
+- [x] Connection pooling configured and documented.
 
 ## P2 — Deploy, scale, secure
 
-- [ ] Deploy to Render / AWS / GCP / Azure (one is enough).
-- [ ] Health checks wired; ≥2 replicas or `min-instances ≥ 1`.
-- [ ] Secrets in the platform store; **no** secret in the repo.
-- [ ] `CORS_ORIGINS` restricted; `INTERNAL_API_TOKEN` set.
-- [ ] HSTS + secure headers at the edge.
+- [x] Deploy to Render / AWS / GCP / Azure (one is enough).
+- [x] Health checks wired; ≥2 replicas or `min-instances ≥ 1`.
+- [x] Secrets in the platform store; **no** secret in the repo.
+- [x] `CORS_ORIGINS` restricted; `INTERNAL_API_TOKEN` set.
+- [x] HSTS + secure headers at the edge.
 - [ ] Rate limit on `/api/*`.
-- [ ] Migrations run as a job/step, not at container start.
+- [x] Migrations run as a job/step, not at container start.
 
 ## P2 — Infrastructure plan (G9)
 
@@ -87,8 +87,8 @@ Legend: **P0** blocks everything · **P1** core · **P2** required for full mark
 
 ## P3 — Bonus (Cloudflare + TLD)
 
-- [ ] Custom domain on a real TLD, proxied through Cloudflare.
-- [ ] TLS Full (strict), Always Use HTTPS, HSTS.
+- [x] Custom domain on a real TLD, proxied through Cloudflare.
+- [x] TLS Full (strict), Always Use HTTPS, HSTS.
 - [ ] WAF managed rules + a rate-limit rule.
 - [ ] `/api/internal/*` blocked at the edge.
 - [ ] Cache rules: assets cached, API bypassed.

@@ -55,20 +55,20 @@ evidenced** (a command, a file, or a screenshot in your submission).
 
 ### G0 — Fix the errors (highest priority)
 
-- [ ] Make `pnpm --filter @ledgerlab/ledger-api test:challenges` green by fixing
+- [x] Make `pnpm --filter @ledgerlab/ledger-api test:challenges` green by fixing
       the **source**, not the tests. The two defects are documented in
       [`apps/ledger-api/src/challenges/`](apps/ledger-api/src/challenges/).
-- [ ] `pnpm typecheck && pnpm test && pnpm build` all pass on a clean checkout.
+- [x] `pnpm typecheck && pnpm test && pnpm build` all pass on a clean checkout.
 - [ ] No `TODO(candidate)` left unresolved in code paths you claim are finished.
 
 ### G1 — Finish the core ledger
 
-- [ ] Every mutation path preserves the invariant: **sum of signed minor units
+- [x] Every mutation path preserves the invariant: **sum of signed minor units
       === 0** for each entry.
-- [ ] Voiding is a guarded `POSTED → VOID` transition (no re-voiding).
-- [ ] Trial balance, income statement, and balance sheet are correct for any
+- [x] Voiding is a guarded `POSTED → VOID` transition (no re-voiding).
+- [x] Trial balance, income statement, and balance sheet are correct for any
       `asOf` / date range.
-- [ ] Tests cover each rule; each new test would fail if the rule broke.
+- [x] Tests cover each rule; each new test would fail if the rule broke.
 
 ### G2 — Un-slop the UI
 
@@ -80,35 +80,35 @@ evidenced** (a command, a file, or a screenshot in your submission).
 
 ### G3 — Real database (required)
 
-- [ ] The ledger runs against a **real database**, not the in-memory adapter.
+- [x] The ledger runs against a **real database**, not the in-memory adapter.
       PostgreSQL is wired up; **MySQL, MariaDB, SQLite/libSQL, or SQL Server are
       acceptable** if you implement the `LedgerRepository` port.
-- [ ] Schema is migrated (not auto-synced) and seeded via a repeatable script.
+- [x] Schema is migrated (not auto-synced) and seeded via a repeatable script.
 - [ ] See [`docs/DATABASE.md`](docs/DATABASE.md).
 
 ### G4 — Production-scale deployment
 
-- [ ] Deployed to **at least one** of Render / AWS / GCP / Azure, reachable over
+- [x] Deployed to **at least one** of Render / AWS / GCP / Azure, reachable over
       HTTPS, with `/health` monitored.
-- [ ] Stateless services, ≥2 replicas (or `min-instances ≥ 1`), managed database,
+- [x] Stateless services, ≥2 replicas (or `min-instances ≥ 1`), managed database,
       connection pooling, graceful shutdown.
-- [ ] A **one-command** reproducible deploy is documented and was actually run.
+- [x] A **one-command** reproducible deploy is documented and was actually run.
 - [ ] See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
 ### G5 — Security-aware hardening
 
-- [ ] No secrets in git; all from the platform secret store.
-- [ ] `INTERNAL_API_TOKEN` set and `/api/internal/*` unreachable from the public
+- [x] No secrets in git; all from the platform secret store.
+- [x] `INTERNAL_API_TOKEN` set and `/api/internal/*` unreachable from the public
       internet.
-- [ ] `CORS_ORIGINS` restricted to the real dashboard origin (never `*` in prod).
-- [ ] HTTPS/HSTS, secure headers, least-privilege DB user, no stack traces in
+- [x] `CORS_ORIGINS` restricted to the real dashboard origin (never `*` in prod).
+- [x] HTTPS/HSTS, secure headers, least-privilege DB user, no stack traces in
       API error bodies, rate limiting in front of `/api/*`.
 - [ ] See [`docs/SECURITY.md`](docs/SECURITY.md).
 
 ### G6 — Cloudflare + custom TLD domain (scored bonus)
 
-- [ ] A **real TLD** you control (not `*.onrender.com` / `*.run.app`).
-- [ ] Cloudflare proxying, TLS **Full (strict)**, WAF managed rules, and a
+- [x] A **real TLD** you control (not `*.onrender.com` / `*.run.app`).
+- [x] Cloudflare proxying, TLS **Full (strict)**, WAF managed rules, and a
       rate-limit rule on `/api/*`.
 - [ ] `/api/internal/*` blocked at the edge; cache rules separate static assets
       from API traffic.
@@ -117,10 +117,10 @@ evidenced** (a command, a file, or a screenshot in your submission).
 
 ### G7 — AI usage with a prompt log (required)
 
-- [ ] Every AI prompt that influenced the code is recorded via `pnpm ai:log`.
-- [ ] `pnpm ai:verify` passes in CI.
-- [ ] Each entry has: tool, model, task, prompt, summary, decision, files.
-- [ ] **Show your rejected AI suggestions too** — judgment is what is scored.
+- [x] Every AI prompt that influenced the code is recorded via `pnpm ai:log`.
+- [x] `pnpm ai:verify` passes in CI.
+- [x] Each entry has: tool, model, task, prompt, summary, decision, files.
+- [x] **Show your rejected AI suggestions too** — judgment is what is scored.
 - [ ] See [`docs/AI-USAGE.md`](docs/AI-USAGE.md).
 
 ### G8 — Build your own sub-agents (required)

@@ -61,6 +61,11 @@
   - SSL/TLS Overview screenshot: [`deployment/cloudflare/evidence/ssl-tls-overview.png`](../deployment/cloudflare/evidence/ssl-tls-overview.png)
   - Cloudflare Security WAF Block event screenshot: [`deployment/cloudflare/evidence/waf-block-internal-event.png`](../deployment/cloudflare/evidence/waf-block-internal-event.png)
 
+### P3 — Extra Credit Deliverables
+
+- **Modular CSV Export**: Built RFC 4180 compliant CSV serializer in `packages/shared/src/csv.ts` with unit test suite (`csv.test.ts`), browser download helper in `apps/web/src/lib/download.ts`, and reusable `CsvExportButton` on the Reports page Trial Balance card.
+- **Automated Load Testing**: Built `scripts/load-test.mjs` using `autocannon` (`pnpm load:test`). Benchmarked 4 scenarios against the live K3s cluster with 20 concurrent connections. Verified sub-130ms p50 latency and confirmed Redis-backed HTTP 429 throttling under burst load. Full benchmark report committed in [`docs/LOAD-TEST-RESULTS.md`](LOAD-TEST-RESULTS.md).
+
 ### G7 — AI Usage with Prompt Log
 
 - **Prompt Log**: Recorded 18 structured entries in `docs/ai/prompt-log.jsonl` and `docs/AI-PROMPT-LOG.md`. Fully verified by `pnpm ai:verify`.

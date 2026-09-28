@@ -1,0 +1,37 @@
+[
+  {
+    "label": "Test: Challenges",
+    "command": "pnpm",
+    "args": ["--filter", "@ledgerlab/ledger-api", "test:challenges"],
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false
+  },
+  {
+    "label": "Test: Monorepo All",
+    "command": "pnpm",
+    "args": ["test"],
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false
+  },
+  {
+    "label": "Typecheck: Monorepo",
+    "command": "pnpm",
+    "args": ["typecheck"],
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false
+  },
+  {
+    "label": "Build: Production",
+    "command": "pnpm",
+    "args": ["build"],
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false
+  },
+  {
+    "label": "AI: Verify Prompt Log",
+    "command": "pnpm",
+    "args": ["ai:verify"],
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false
+  }
+]

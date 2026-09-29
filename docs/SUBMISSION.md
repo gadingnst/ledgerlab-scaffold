@@ -218,12 +218,13 @@ $ pnpm --filter @ledgerlab/ledger-api test:challenges
 
 ## Verification
 
-```
+```bash
 pnpm format:check   # PASS (All matched files use Prettier code style)
-pnpm typecheck      # PASS (6 packages passed without errors)
-pnpm test           # PASS (38 passed across 3 test suites)
-pnpm build          # PASS (All 3 apps compiled clean)
-pnpm ai:verify      # PASS (18 prompt log entries verified complete)
+pnpm typecheck      # PASS (7 packages passed without errors)
+pnpm test           # PASS (52 passed across 4 test suites: shared, rate-limit, ledger-api, reporting-api)
+pnpm build          # PASS (All apps compiled clean)
+pnpm ai:verify      # PASS (24 prompt log entries verified complete)
+pnpm load:test      # PASS (Autocannon benchmark: 120-156 req/s, p50 ~120ms)
 ```
 
 ---
@@ -231,12 +232,14 @@ pnpm ai:verify      # PASS (18 prompt log entries verified complete)
 ## What I Skipped and Why
 
 - **Dynamic FX Rates**: Kept currency isolated per transaction without automated real-time foreign exchange conversions, as 99.8% of warung transactions are settled in IDR.
-- **Full In-Browser Monolithic Auth**: Focused effort on rock-solid database isolation, Kubernetes deployment, and internal API token boundaries. User management is scheduled for Phase 2.
+- **Full In-Browser Monolithic Auth**: Focused effort on rock-solid database isolation, Kubernetes deployment, and internal API token boundaries. User management and multi-tenant authentication are scheduled for Phase 2.
 
 ---
 
 ## If I Had More Time
 
-1. **Automated Bank Statement Ingestion**: Build MT940 and CSV statement parser with automatic fuzzy matching against open invoices.
-2. **Cryptographic WORM Audit Log**: Implement hash-chained audit log records for every posting state transition.
-3. **One-Click PDF / Excel Export**: Add streaming PDF financial report generation for warung owners and loan officers.
+1. **User Authentication & Multi-Tenant RBAC**: Implement end-to-end OAuth2 / OIDC authentication with granular role-based access control (`Owner`, `Accountant`, `Auditor`, `Cashier`) to enforce strict separation of duties between draft creation, posting approval, and read-only financial auditing.
+2. **Event-Driven Outbox Pattern**: Decouple Ledger API mutation events from Reporting API caching and audit streams using a transactional outbox table with Kafka or RabbitMQ, enabling sub-millisecond asynchronous balance projections.
+3. **Automated Bank Statement Ingestion**: Build MT940, OFX, and bank CSV statement parsers with automatic fuzzy reconciliation against open warung journal vouchers.
+4. **Cryptographic WORM Audit Log**: Implement hash-chained immutable audit log records (Merkle tree / ledger hash chains) for every posting state transition.
+5. **Streaming PDF / Excel Report Export**: Expand beyond the implemented CSV export to typeset PDF financial statements and multi-sheet XLSX workbooks for loan officers and tax filing.
